@@ -1,9 +1,10 @@
-import { AppShell, LoadingOverlay } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { AppShell, Drawer, LoadingOverlay, Title } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import type { UserProfile } from "../api/auth";
 import { useExtendedQuery } from "../hooks/useExtendedQuery";
 import { useUrlStateSync } from "../hooks/useUrlState";
 import { useParametersContext } from "../stores/parameters";
+import { MQ } from "../theme/media";
 import { Skyline } from "../three/skyline";
 import { HoverCard } from "./hover_card";
 import { Sidebar } from "./sidebar";
@@ -20,6 +21,10 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 
 	const [mobileOpened] = useDisclosure();
 	const [desktopOpened] = useDisclosure(true);
+	const [drawerOpened, { open: openDrawer, close: closeDrawer }] =
+		useDisclosure(false);
+
+	const isMobile = useMediaQuery(MQ.sm);
 
 	const { years, fetching, ok } = useExtendedQuery({
 		name,
@@ -43,7 +48,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 			<AppShell.Navbar p="md" pr={0}>
 				<Sidebar profile={profile} ok={ok} />
 			</AppShell.Navbar>
-			<AppShell.Main style={{ height: "calc(100vh)" }}>
+			<AppShell.Main style={{ height: "100vh" }}>
 				<LoadingOverlay
 					visible={fetching}
 					zIndex={1000}
@@ -62,7 +67,27 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 				>
 					<HoverCard />
 				</div>
-				<SkylineControls />
+				<SkylineControls onOpenDrawer={openDrawer} />
+				{isMobile && (
+					<Drawer
+						opened={drawerOpened}
+						onClose={closeDrawer}
+						position="bottom"
+						size="xl"
+						title={
+							<Title
+								flex={1}
+								className="mona-sans-wide"
+								tt="uppercase"
+								order={5}
+							>
+								{import.meta.env.PUBLIC_APP_NAME}
+							</Title>
+						}
+					>
+						<Sidebar fromDrawer profile={profile} ok={ok} />
+					</Drawer>
+				)}
 			</AppShell.Main>
 		</AppShell>
 	);

@@ -34,20 +34,23 @@ import { TowerDampeningInput } from "./sidebar_inputs/tower_dampening";
 import { UsernameOverrideInput } from "./sidebar_inputs/username_override";
 
 interface SidebarProps {
+	fromDrawer?: boolean;
 	profile: UserProfile | null;
 	ok: boolean;
 }
 
 export function Sidebar(props: SidebarProps) {
-	const { profile, ok } = props;
+	const { fromDrawer, profile, ok } = props;
 
 	return (
 		<Stack h={"100%"} gap={10}>
-			<AppShell.Section px={6} py={4}>
-				<Title className="mona-sans-wide" tt="uppercase" order={5}>
-					{import.meta.env.PUBLIC_APP_NAME}
-				</Title>
-			</AppShell.Section>
+			{!fromDrawer && (
+				<AppShell.Section px={6} py={4}>
+					<Title className="mona-sans-wide" tt="uppercase" order={5}>
+						{import.meta.env.PUBLIC_APP_NAME}
+					</Title>
+				</AppShell.Section>
+			)}
 			<Card h="100%" p="md">
 				<AppShell.Section
 					style={{

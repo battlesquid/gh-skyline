@@ -20,6 +20,7 @@ import {
 import { useEffect, useRef } from "react";
 import { isAuthenticated, resolveToken } from "../api/auth";
 import ContributionBackground from "../components/contribution_background";
+import { MQ } from "../theme/media";
 import "../styles/login.css";
 import "../styles/page.css";
 
@@ -55,7 +56,7 @@ function Login() {
 	const loading = useRef<boolean | null>(null);
 
 	// Prefer CSS for layout; JS flag helps toggle simplified title on small screens
-	const isMobile = useMediaQuery("(max-width: 640px)");
+	const isMobile = useMediaQuery(MQ.login);
 
 	// Persist redirect across OAuth flow
 	useEffect(() => {
