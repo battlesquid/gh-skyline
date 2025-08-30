@@ -22,7 +22,7 @@ export function ExportButton() {
 	return (
 		<Suspense>
 			<Button
-				fullWidth
+				flex={1}
 				loading={model === null || dirty || exporting}
 				disabled={model === null || dirty || exporting}
 				component="a"

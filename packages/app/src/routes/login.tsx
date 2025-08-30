@@ -17,6 +17,8 @@ import { isAuthenticated, resolveToken } from "../api/auth";
 import ContributionBackground from "../components/contribution_background";
 import "../styles/login.css";
 
+const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
+
 type LoginSearchParams = {
 	code?: string;
 	redirect?: string;
@@ -43,13 +45,30 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
 	const router = useRouter();
-	const { code } = Route.useSearch();
+	const { code, redirect: redirectUrl } = Route.useSearch();
 	const loading = useRef<boolean | null>(null);
+
+	// Persist redirect across OAuth flow
+	useEffect(() => {
+		if (redirectUrl) {
+			sessionStorage.setItem(REDIRECT_STORAGE_KEY, redirectUrl);
+		}
+	}, [redirectUrl]);
 
 	useEffect(() => {
 		const handleRedirect = async (code: string) => {
 			await resolveToken(code);
-			await router.invalidate();
+			const storedRedirect = sessionStorage.getItem(REDIRECT_STORAGE_KEY);
+			if (storedRedirect) {
+				sessionStorage.removeItem(REDIRECT_STORAGE_KEY);
+				window.location.replace(storedRedirect);
+				return;
+			}
+			if (redirectUrl && typeof redirectUrl === "string") {
+				window.location.replace(redirectUrl);
+				return;
+			}
+			await router.navigate({ to: "/", replace: true });
 		};
 		if (code !== undefined && !loading.current) {
 			loading.current = true;
@@ -98,14 +117,18 @@ function Login() {
 							</Center>
 							<Button
 								component="a"
-								href={import.meta.env.PUBLIC_WORKER_URL}
+								href={`${import.meta.env.PUBLIC_WORKER_URL}?redirect=${encodeURIComponent(
+									redirectUrl ?? window.location.href,
+								)}`}
 								fullWidth={true}
 							>
 								Login to Github
 							</Button>
 							<Button
 								component="a"
-								href={import.meta.env.PUBLIC_WORKER_ENTERPRISE_URL}
+								href={`${import.meta.env.PUBLIC_WORKER_ENTERPRISE_URL}?redirect=${encodeURIComponent(
+									redirectUrl ?? window.location.href,
+								)}`}
 								fullWidth={true}
 							>
 								Login to Cloud Enterprise

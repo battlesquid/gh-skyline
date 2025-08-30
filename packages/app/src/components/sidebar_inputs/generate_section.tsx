@@ -15,13 +15,14 @@ export interface GenerateSectionProps {
 const MIN_START_YEAR = 2000;
 
 export function GenerateSection(props: GenerateSectionProps) {
-	const { ok, login } = props;
+	const { ok } = props;
 	const initialStartYear =
 		getParametersStore().getInitialState().inputs.startYear;
 	const initialEndYear = getParametersStore().getInitialState().inputs.endYear;
 	const setInputs = useParametersContext((state) => state.setInputs);
+	const nameFromStore = useParametersContext((state) => state.inputs.name);
 
-	const [name, setName] = useState(login ?? "");
+	const [name, setName] = useState(nameFromStore);
 	const [modified, setModified] = useState(false);
 
 	const [
@@ -59,6 +60,10 @@ export function GenerateSection(props: GenerateSectionProps) {
 	useEffect(() => {
 		setModified(false);
 	}, [ok]);
+
+	useEffect(() => {
+		setName(nameFromStore);
+	}, [nameFromStore]);
 
 	useEffect(() => {
 		if (!ok) {

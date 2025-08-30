@@ -35,24 +35,24 @@ const prepareModel = (model: Group, scale: number) => {
 	const exportGroup = preparedModel.getObjectByName(
 		SkylineObjectNames.TowersExportGroup,
 	) as Group;
-	const instances = preparedModel.getObjectByName(
-		SkylineObjectNames.Towers,
-	) as InstancedMesh | undefined;
+	const instances = preparedModel.getObjectByName(SkylineObjectNames.Towers) as
+		| InstancedMesh
+		| undefined;
 
-    if (instances !== undefined) {
-        const meshes = createMeshesFromInstancedMesh(instances);
-    
-        meshes.position.set(0, meshes.position.y, 0);
-        meshes.updateMatrix();
-    
-        exportGroup.add(meshes);
-    
-        const instancesGroup = preparedModel.getObjectByName(
-            SkylineObjectNames.TowersParent,
-        ) as Group;
-        instancesGroup.removeFromParent();
-        instances.removeFromParent();
-    }
+	if (instances !== undefined) {
+		const meshes = createMeshesFromInstancedMesh(instances);
+
+		meshes.position.set(0, meshes.position.y, 0);
+		meshes.updateMatrix();
+
+		exportGroup.add(meshes);
+
+		const instancesGroup = preparedModel.getObjectByName(
+			SkylineObjectNames.TowersParent,
+		) as Group;
+		instancesGroup.removeFromParent();
+		instances.removeFromParent();
+	}
 
 	preparedModel.rotation.set(Math.PI / 2, 0, 0);
 	preparedModel.scale.set(scale, scale, scale);
@@ -72,7 +72,7 @@ const loader = async (
 	const preparedModel = prepareModel(model, scale);
 	const url = await EXPORT_MAP[format](preparedModel);
 	const vec = getThreeBoundingBox(preparedModel);
-	const size = `${Math.round(vec.x)}mm \u{00d7} ${Math.round(vec.y)}mm \u{00d7} ${Math.round(vec.z)}mm`;
+	const size = `${Math.round(vec.x)}\u{339c} \u{00d7} ${Math.round(vec.y)}\u{339c} \u{00d7} ${Math.round(vec.z)}\u{339c}`;
 	return { url, size };
 };
 
@@ -83,7 +83,9 @@ export function useExportedModel(
 ) {
 	const [downloadUrl, setDownloadUrl] = useState<string>("");
 	const [exporting, setExporting] = useState(true);
-	const [size, setSize] = useState("0mm \u{00d7} 0mm \u{00d7} 0mm");
+	const [size, setSize] = useState(
+		"0\u{339c} \u{00d7} 0\u{339c} \u{00d7} 0\u{339c}",
+	);
 	let exportTimeout: number | undefined;
 	const clearExportTimeout = () => {
 		if (exportTimeout !== undefined) {
@@ -100,7 +102,7 @@ export function useExportedModel(
 				}
 			})
 			.finally(() => {
-				exportTimeout = setTimeout(() => {
+				exportTimeout = window.setTimeout(() => {
 					setExporting(false);
 				}, 500);
 			});

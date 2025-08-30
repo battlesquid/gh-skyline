@@ -2,6 +2,7 @@ import { AppShell, LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import type { UserProfile } from "../api/auth";
 import { useExtendedQuery } from "../hooks/useExtendedQuery";
+import { useUrlStateSync } from "../hooks/useUrlState";
 import { useParametersContext } from "../stores/parameters";
 import { Skyline } from "../three/skyline";
 import { HoverCard } from "./hover_card";
@@ -25,6 +26,8 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 		start,
 		end,
 	});
+
+	useUrlStateSync();
 
 	return (
 		<AppShell

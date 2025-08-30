@@ -4,6 +4,7 @@ import {
 	Button,
 	Card,
 	Divider,
+	Group,
 	ScrollArea,
 	Stack,
 	Title,
@@ -28,6 +29,7 @@ import { GenerateSection } from "./sidebar_inputs/generate_section";
 import { InsetTextCheckbox } from "./sidebar_inputs/inset_text";
 import { RenderColorInput } from "./sidebar_inputs/render_color";
 import { ScaleInput } from "./sidebar_inputs/scale";
+import { ShareButton } from "./sidebar_inputs/share";
 import { TowerDampeningInput } from "./sidebar_inputs/tower_dampening";
 import { UsernameOverrideInput } from "./sidebar_inputs/username_override";
 
@@ -109,7 +111,10 @@ export function Sidebar(props: SidebarProps) {
 					</Stack>
 				</AppShell.Section>
 				<AppShell.Section>
-					<ExportButton />
+					<Group gap="xs">
+						<ShareButton />
+						<ExportButton />
+					</Group>
 				</AppShell.Section>
 			</Card>
 			<AppShell.Section>
