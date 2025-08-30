@@ -6,6 +6,8 @@ import { createParametersStore, ParametersContext } from "../stores/parameters";
 import "../styles/editor.css";
 import { getInitialInputsFromUrl } from "../share/urlShare";
 import { preloadDefaultFonts } from "../stores/fonts";
+import "../styles/editor.css";
+import "../styles/page.css";
 
 export const Route = createFileRoute("/")({
 	component: Editor,

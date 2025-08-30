@@ -1,0 +1,20 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.mona-sans-wide {
+	font-family: "Mona Sans", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 900;
+	font-style: normal;
+	font-variation-settings: "wdth" 125;
+}

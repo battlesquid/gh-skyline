@@ -34,6 +34,7 @@ And so here we are!
 - Performant, changes are applied in real-time
 - 3MF support (can export model with colors for multi-extruder printers)
 - Cloud Enterprise authentication support
+- Sharing support, with minimal or full model settings
 
 ## Stack
 

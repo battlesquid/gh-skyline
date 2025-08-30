@@ -47,6 +47,9 @@ importers:
       '@urql/exchange-auth':
         specifier: ^2.2.0
         version: 2.2.1(@urql/core@5.1.1(graphql@16.11.0))
+      animejs:
+        specifier: ^4.1.3
+        version: 4.1.3
       gql.tada:
         specifier: ^1.8.10
         version: 1.8.10(graphql@16.11.0)(typescript@5.8.3)
@@ -1240,6 +1243,9 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  animejs@4.1.3:
+    resolution: {integrity: sha512-4XzlIsQsku1ycSPzchxxT0N+ohEMZObG71nOSBBkZoV4sgQvtXa/qAANkFpTE6pegdV8JnIBZiB0LfdxNoRNMw==}
 
   ansis@4.1.0:
     resolution: {integrity: sha512-BGcItUBWSMRgOCe+SVZJ+S7yTRG0eGt9cXAHev72yuGcY23hnLA7Bky5L/xLyPINoSN95geovfBkqoTlNZYa7w==}
@@ -3233,6 +3239,8 @@ snapshots:
   acorn@8.14.0: {}
 
   acorn@8.15.0: {}
+
+  animejs@4.1.3: {}
 
   ansis@4.1.0: {}
 

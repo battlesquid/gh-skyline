@@ -34,7 +34,7 @@ export function ShareButton() {
 					onClick={() => setOpened((v) => !v)}
 					leftSection={<IconShare2 size={16} />}
 				>
-					<Text fw={900} size="sm">
+					<Text className="mona-sans-wide" tt="uppercase" fw={900} size="xs">
 						Share
 					</Text>
 				</Button>
@@ -42,11 +42,11 @@ export function ShareButton() {
 			<Popover.Dropdown>
 				<Stack gap={8} w={280}>
 					<Text size="sm" fw={600}>
-						Share options
+						Share Options
 					</Text>
 					<Group gap="xs" wrap="nowrap">
 						<Text size="xs" style={{ flex: 1 }}>
-							Username + year range
+							Username + Year Range
 						</Text>
 						<CopyButton value={minimal} timeout={2000}>
 							{({ copied, copy }) => (
@@ -64,7 +64,7 @@ export function ShareButton() {
 					</Group>
 					<Group gap="xs" wrap="nowrap">
 						<Text size="xs" style={{ flex: 1 }}>
-							Username + years + model/render
+							Username + Years + Model/Render
 						</Text>
 						<CopyButton value={full} timeout={2000}>
 							{({ copied, copy }) => (

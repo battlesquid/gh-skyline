@@ -13,4 +13,56 @@ body,
 
 body {
 	background: var(--mantine-color-default);
+	overflow-x: hidden;
+}
+
+.title {
+	font-size: 4rem;
+}
+
+.logo {
+	will-change: gap, opacity;
+	display: flex;
+	gap: 4rem;
+	opacity: 0;
+}
+.stack {
+	display: grid;
+	flex-direction: column;
+	text-align: end;
+}
+
+.pink-text {
+	z-index: 10000;
+}
+
+.blue-text {
+	z-index: 10000;
+}
+
+.slide-down,
+.slide-up {
+	user-select: none;
+	will-change: transform;
+	grid-column-start: 1;
+	grid-row-start: 1;
+}
+
+.neon-pink {
+	color: transparent;
+	text-shadow:
+		0 0 0px #060a14,
+		0 0 10px rgb(255, 0, 179);
+}
+
+.neon-blue {
+	color: transparent;
+	text-shadow:
+		0 0 0px #060a14,
+		0 0 10px rgb(0, 217, 255);
+}
+
+.caption-item {
+	will-change: opacity;
+	opacity: 0;
 }
