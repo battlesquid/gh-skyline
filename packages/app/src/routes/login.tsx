@@ -89,7 +89,8 @@ function Login() {
 				ease: "outExpo",
 				opacity: 1,
 				gap: "1rem",
-                duration: 500
+                duration: 500,
+                delay: 1000
 			});
 
 			createTimeline()
@@ -157,7 +158,7 @@ function Login() {
 								</div>
 							</div>
 							<Stack className="caption">
-								<div className="caption-item mona-sans-wide">YOUR CONTRIBUTION STORY IN 3D</div>
+								<div className="caption-item mona-sans-wide">YOUR CONTRIBUTION STORY IN {_3D}</div>
 								<Button
 									className="caption-item"
 									component="a"
@@ -189,7 +190,7 @@ function Login() {
 						c="dimmed"
 						size="compact-xs"
 						variant="transparent"
-						href="https://github.com/battlesquid/skyline"
+						href="https://github.com/battlesquid/gh-skyline"
 						target="_blank"
 						leftSection={<IconBrandGithubFilled size={18} />}
 					>

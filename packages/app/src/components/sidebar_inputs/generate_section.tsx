@@ -123,7 +123,7 @@ export function GenerateSection(props: GenerateSectionProps) {
 				/>
 			</Group>
 			<Button
-			className="mona-sans-wide"
+			    className="mona-sans-wide"
 				fullWidth
 				disabled={name.trim() === ""}
 				onClick={() =>
@@ -134,7 +134,7 @@ export function GenerateSection(props: GenerateSectionProps) {
 					})
 				}
 				variant="light"
-				size="sm"
+				size="xs"
 			>
 				GENERATE
 			</Button>

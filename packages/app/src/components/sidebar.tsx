@@ -59,7 +59,7 @@ export function Sidebar(props: SidebarProps) {
 					<Stack gap={10}>
 						<GenerateSection ok={ok} login={profile?.login ?? ""} />
 						<Divider />
-						<Title order={5}>Settings</Title>
+						<Title className="mona-sans-wide" tt="uppercase" order={5}>Settings</Title>
 						<Accordion classNames={accordionClasses}>
 							<Accordion.Item value="text_options">
 								<Accordion.Control icon={<IconTextSize stroke={1} size={20} />}>
@@ -101,9 +101,9 @@ export function Sidebar(props: SidebarProps) {
 								</Accordion.Control>
 								<Accordion.Panel>
 									<Stack gap={10}>
-										<ScaleInput />
 										<FilenameInput />
 										<ExportFormatInput />
+										<ScaleInput />
 									</Stack>
 								</Accordion.Panel>
 							</Accordion.Item>
@@ -122,8 +122,10 @@ export function Sidebar(props: SidebarProps) {
 			</AppShell.Section>
 			<AppShell.Section>
 				<Button
+                    className="mona-sans-wide"
+                    tt="uppercase"
 					component="a"
-					href="https://github.com/battlesquid/skyline"
+					href="https://github.com/battlesquid/gh-skyline"
 					target="_blank"
 					size="xs"
 					variant="default"
