@@ -126,8 +126,6 @@ export function Sidebar(props: SidebarProps) {
 			</AppShell.Section>
 			<AppShell.Section>
 				<Button
-					className="mona-sans-wide"
-					tt="uppercase"
 					component="a"
 					href="https://github.com/battlesquid/gh-skyline"
 					target="_blank"
