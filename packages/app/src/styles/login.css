@@ -40,7 +40,8 @@ body {
 	z-index: 10000;
 }
 
-.slide-down, .slide-up {
+.slide-down,
+.slide-up {
 	user-select: none;
 	will-change: transform;
 	grid-column-start: 1;

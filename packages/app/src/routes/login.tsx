@@ -5,17 +5,22 @@ import {
 	Center,
 	Flex,
 	LoadingOverlay,
-	Stack
+	Stack,
 } from "@mantine/core";
 import { IconBrandGithubFilled } from "@tabler/icons-react";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import { animate, createScope, createTimeline, type Scope, stagger } from "animejs";
+import {
+	animate,
+	createScope,
+	createTimeline,
+	type Scope,
+	stagger,
+} from "animejs";
 import { useEffect, useRef } from "react";
 import { isAuthenticated, resolveToken } from "../api/auth";
 import ContributionBackground from "../components/contribution_background";
 import "../styles/login.css";
 import "../styles/page.css";
-
 
 const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
 
@@ -48,25 +53,24 @@ function Login() {
 	const { code, redirect: redirectUrl } = Route.useSearch();
 	const loading = useRef<boolean | null>(null);
 
-    
 	// Persist redirect across OAuth flow
 	useEffect(() => {
-        if (redirectUrl) {
-            sessionStorage.setItem(REDIRECT_STORAGE_KEY, redirectUrl);
+		if (redirectUrl) {
+			sessionStorage.setItem(REDIRECT_STORAGE_KEY, redirectUrl);
 		}
 	}, [redirectUrl]);
-    
+
 	useEffect(() => {
-        const handleRedirect = async (code: string) => {
-            await resolveToken(code);
+		const handleRedirect = async (code: string) => {
+			await resolveToken(code);
 			const storedRedirect = sessionStorage.getItem(REDIRECT_STORAGE_KEY);
 			if (storedRedirect) {
-                sessionStorage.removeItem(REDIRECT_STORAGE_KEY);
+				sessionStorage.removeItem(REDIRECT_STORAGE_KEY);
 				window.location.replace(storedRedirect);
 				return;
 			}
 			if (redirectUrl && typeof redirectUrl === "string") {
-                window.location.replace(redirectUrl);
+				window.location.replace(redirectUrl);
 				return;
 			}
 			await router.navigate({ to: "/", replace: true });
@@ -76,21 +80,21 @@ function Login() {
 			handleRedirect(code);
 		}
 	}, []);
-    
-    const root = useRef(null);
-    const scope = useRef<Scope | null>(null);
+
+	const root = useRef(null);
+	const scope = useRef<Scope | null>(null);
 
 	useEffect(() => {
-        if (loading.current) {
-            return;
+		if (loading.current) {
+			return;
 		}
 		scope.current = createScope({ root }).add(() => {
-            const slideinfade = animate(".logo", {
+			const slideinfade = animate(".logo", {
 				ease: "outExpo",
 				opacity: 1,
 				gap: "1rem",
-                duration: 500,
-                delay: 1000
+				duration: 500,
+				delay: 1000,
 			});
 
 			createTimeline()
@@ -99,26 +103,26 @@ function Login() {
 					ease: "cubicBezier(.28,1,0,1)",
 					y: stagger("-1.5rem"),
 					delay: stagger(10),
-					marginTop: "4.5rem"
-				})
+					marginTop: "4.5rem",
+				});
 
 			createTimeline()
 				.sync(slideinfade)
 				.add(".slide-down", {
 					ease: "cubicBezier(.28,1,0,1)",
-					y: stagger("1.5rem",),
+					y: stagger("1.5rem"),
 					delay: stagger(10, {
-						reversed: true
+						reversed: true,
 					}),
-					marginBottom: "4.5rem"
+					marginBottom: "4.5rem",
 				})
 				.add(".caption-item", {
 					opacity: 1,
-					delay: stagger(100)
-				})
+					delay: stagger(100),
+				});
 		});
 		return () => scope.current?.revert();
-	}, [])
+	}, []);
 
 	const _3D = (
 		<span
@@ -158,13 +162,15 @@ function Login() {
 								</div>
 							</div>
 							<Stack className="caption">
-								<div className="caption-item mona-sans-wide">YOUR CONTRIBUTION STORY IN {_3D}</div>
+								<div className="caption-item mona-sans-wide">
+									YOUR CONTRIBUTION STORY IN {_3D}
+								</div>
 								<Button
 									className="caption-item"
 									component="a"
 									href={`${import.meta.env.PUBLIC_WORKER_URL}?redirect=${encodeURIComponent(
-									    redirectUrl ?? window.location.href,
-								    )}`}
+										redirectUrl ?? window.location.href,
+									)}`}
 									fullWidth={true}
 								>
 									Login to Github
@@ -173,8 +179,8 @@ function Login() {
 									className="caption-item"
 									component="a"
 									href={`${import.meta.env.PUBLIC_WORKER_ENTERPRISE_URL}?redirect=${encodeURIComponent(
-									    redirectUrl ?? window.location.href,
-								    )}`}
+										redirectUrl ?? window.location.href,
+									)}`}
 									fullWidth={true}
 								>
 									Login to Cloud Enterprise
