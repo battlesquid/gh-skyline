@@ -1,4 +1,4 @@
-import { AppShell, Drawer, LoadingOverlay, Title } from "@mantine/core";
+import { AppShell, Drawer, LoadingOverlay, Text } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import type { UserProfile } from "../api/auth";
 import { useExtendedQuery } from "../hooks/useExtendedQuery";
@@ -75,14 +75,14 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 						position="bottom"
 						size="xl"
 						title={
-							<Title
+							<Text
 								flex={1}
 								className="mona-sans-wide"
 								tt="uppercase"
-								order={5}
+								size="md"
 							>
 								{import.meta.env.PUBLIC_APP_NAME}
-							</Title>
+							</Text>
 						}
 					>
 						<Sidebar fromDrawer profile={profile} ok={ok} />
