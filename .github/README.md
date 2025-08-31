@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://gh-skyline.pages.dev">
-        <img src="./assets/banner_nopadding.png" alt="Github Skyline: Your Contribution Story in 3D">
+        <img src="./assets/logo_paddingless.png" alt="Github Skyline: Your Contribution Story in 3D">
     </a>
     <hr />
     <a href="https://github.com/battlesquid/gh-skyline/stargazers">
