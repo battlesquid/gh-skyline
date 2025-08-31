@@ -66,3 +66,27 @@ body {
 	will-change: opacity;
 	opacity: 0;
 }
+
+/* Mobile layout */
+@media (max-width: 640px) {
+	.title {
+		padding-inline: var(--mantine-spacing-xs);
+		font-size: 2.25rem;
+		line-height: 0.8;
+	}
+
+	.logo {
+		flex-direction: column;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
+	.stack {
+		text-align: center;
+	}
+
+	.caption {
+		width: 100%;
+		padding-inline: 1rem;
+	}
+}

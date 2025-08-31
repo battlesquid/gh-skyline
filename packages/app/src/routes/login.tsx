@@ -7,6 +7,7 @@ import {
 	LoadingOverlay,
 	Stack,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconBrandGithubFilled } from "@tabler/icons-react";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import {
@@ -19,6 +20,7 @@ import {
 import { useEffect, useRef } from "react";
 import { isAuthenticated, resolveToken } from "../api/auth";
 import ContributionBackground from "../components/contribution_background";
+import { MQ } from "../theme/media";
 import "../styles/login.css";
 import "../styles/page.css";
 
@@ -52,6 +54,9 @@ function Login() {
 	const router = useRouter();
 	const { code, redirect: redirectUrl } = Route.useSearch();
 	const loading = useRef<boolean | null>(null);
+
+	// Prefer CSS for layout; JS flag helps toggle simplified title on small screens
+	const isMobile = useMediaQuery(MQ.login);
 
 	// Persist redirect across OAuth flow
 	useEffect(() => {
@@ -97,32 +102,35 @@ function Login() {
 				delay: 1000,
 			});
 
-			createTimeline()
-				.sync(slideinfade)
-				.add(".slide-up", {
-					ease: "cubicBezier(.28,1,0,1)",
-					y: stagger("-1.5rem"),
-					delay: stagger(10),
-					marginTop: "4.5rem",
-				});
+			if (isMobile) {
+				// Mobile: only fade in the caption/buttons
+				createTimeline()
+					.sync(slideinfade)
+					.add(".caption-item", { opacity: 1, delay: stagger(100) });
+			} else {
+				// Desktop: run stacked text animations
+				createTimeline()
+					.sync(slideinfade)
+					.add(".slide-up", {
+						ease: "cubicBezier(.28,1,0,1)",
+						y: stagger("-1.5rem"),
+						delay: stagger(10),
+						marginTop: "4.5rem",
+					});
 
-			createTimeline()
-				.sync(slideinfade)
-				.add(".slide-down", {
-					ease: "cubicBezier(.28,1,0,1)",
-					y: stagger("1.5rem"),
-					delay: stagger(10, {
-						reversed: true,
-					}),
-					marginBottom: "4.5rem",
-				})
-				.add(".caption-item", {
-					opacity: 1,
-					delay: stagger(100),
-				});
+				createTimeline()
+					.sync(slideinfade)
+					.add(".slide-down", {
+						ease: "cubicBezier(.28,1,0,1)",
+						y: stagger("1.5rem"),
+						delay: stagger(10, { reversed: true }),
+						marginBottom: "4.5rem",
+					})
+					.add(".caption-item", { opacity: 1, delay: stagger(100) });
+			}
 		});
 		return () => scope.current?.revert();
-	}, []);
+	}, [isMobile]);
 
 	const _3D = (
 		<span
@@ -147,20 +155,32 @@ function Login() {
 				<Flex gap={20}>
 					<Center>
 						<Stack gap={30}>
-							<div className="logo">
-								<div className="stack mona-sans-wide title github-text">
-									<span className="slide-up neon-blue">GITHUB</span>
-									<span className="slide-up neon-blue">GITHUB</span>
-									<span className="slide-up neon-blue">GITHUB</span>
-									<span className="slide-up pink-text">GITHUB</span>
+							{/* On mobile, render a simplified title; on larger screens use the animated stacked logo. */}
+							{isMobile ? (
+								<div className="logo">
+									<div
+										className="mona-sans-wide title"
+										style={{ textAlign: "center" }}
+									>
+										GITHUB SKYLINE
+									</div>
 								</div>
-								<div className="stack mona-sans-wide title skyline-text">
-									<span className="slide-down neon-pink">SKYLINE</span>
-									<span className="slide-down neon-pink">SKYLINE</span>
-									<span className="slide-down neon-pink">SKYLINE</span>
-									<span className="slide-down pink-text">SKYLINE</span>
+							) : (
+								<div className="logo">
+									<div className="stack mona-sans-wide title">
+										<span className="slide-up neon-blue">GITHUB</span>
+										<span className="slide-up neon-blue">GITHUB</span>
+										<span className="slide-up neon-blue">GITHUB</span>
+										<span className="slide-up pink-text">GITHUB</span>
+									</div>
+									<div className="stack mona-sans-wide title">
+										<span className="slide-down neon-pink">SKYLINE</span>
+										<span className="slide-down neon-pink">SKYLINE</span>
+										<span className="slide-down neon-pink">SKYLINE</span>
+										<span className="slide-down pink-text">SKYLINE</span>
+									</div>
 								</div>
-							</div>
+							)}
 							<Stack className="caption">
 								<div className="caption-item mona-sans-wide">
 									YOUR CONTRIBUTION STORY IN {_3D}
