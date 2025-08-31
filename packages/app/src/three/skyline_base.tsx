@@ -71,7 +71,7 @@ export function SkylineBase({ years }: SkylineBaseProps) {
 			points: toPolygons(
 				ttfFont,
 				computed.resolvedName,
-				computed.platformHeight / 1.75,
+				computed.platformHeight / 1.65,
 			),
 			offset: inputs.nameOffset,
 		}),
@@ -83,7 +83,7 @@ export function SkylineBase({ years }: SkylineBaseProps) {
 			points: toPolygons(
 				ttfFont,
 				computed.formattedYear,
-				computed.platformHeight / 1.75,
+				computed.platformHeight / 1.65,
 			),
 			offset: inputs.yearOffset,
 		}),

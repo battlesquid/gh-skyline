@@ -1,8 +1,9 @@
 import { Select } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
+import { getParametersStore, useParametersContext } from "../../stores/parameters";
 import { ExportFormat } from "../../three/export";
 
 export function ExportFormatInput() {
+    const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.exportFormat;
 	const setInputs = useParametersContext((state) => state.setInputs);
 	return (
 		<Select
@@ -17,7 +18,7 @@ export function ExportFormatInput() {
 					label: ExportFormat.Stl.toUpperCase(),
 				},
 			]}
-			defaultValue={ExportFormat.ThreeMF}
+			defaultValue={DEFAULT_VALUE}
 			allowDeselect={false}
 			onChange={(value) => {
 				if (value === null) {

@@ -1,9 +1,10 @@
 import { Select } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
+import { getParametersStore, useParametersContext } from "../../stores/parameters";
 import { SkylineBaseShape } from "../../three/types";
 import { capitalize } from "../../utils";
 
 export function BaseShapeInput() {
+    const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.shape;
 	const setInputs = useParametersContext((state) => state.setInputs);
 	return (
 		<Select
@@ -18,7 +19,7 @@ export function BaseShapeInput() {
 					label: capitalize(SkylineBaseShape.Frustum),
 				},
 			]}
-			defaultValue={SkylineBaseShape.Prism}
+			defaultValue={DEFAULT_VALUE}
 			allowDeselect={false}
 			onChange={(value) => {
 				if (value === null) {
