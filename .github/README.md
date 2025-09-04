@@ -26,6 +26,13 @@ didn't want to install the Github CLI just to get my skyline. I liked the idea o
 
 And so here we are!
 
+## Screenshots
+
+![Editor](./assets/editor.png)
+![Colors](./assets/colors.png)
+![Login](./assets/login.png)
+
+
 ## Features
 
 - Highly customizable, parameter-based model editor with options to change
