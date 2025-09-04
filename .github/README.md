@@ -29,7 +29,6 @@ And so here we are!
 ## Screenshots
 
 ![Editor](./assets/editor.png)
-![Colors](./assets/colors.png)
 ![Login](./assets/login.png)
 
 
