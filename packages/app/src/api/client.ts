@@ -23,6 +23,7 @@ export const client = new Client({
 				async refreshAuth() {
 					if (isAuthenticated()) {
 						logout();
+						window.location.reload();
 					}
 				},
 			};

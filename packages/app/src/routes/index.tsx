@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { fetchProfile, isAuthenticated } from "../api/auth";
 import { EditorAppShell } from "../components/appshell";
 import { createParametersStore, ParametersContext } from "../stores/parameters";
-import "../styles/editor.css";
 import { getInitialInputsFromUrl } from "../share/urlShare";
 import { preloadDefaultFonts } from "../stores/fonts";
 import "../styles/editor.css";
@@ -11,7 +10,8 @@ import "../styles/page.css";
 
 export const Route = createFileRoute("/")({
 	component: Editor,
-	beforeLoad: ({ location }) => {
+	beforeLoad: async ({ location }) => {
+		await fetchProfile();
 		if (!isAuthenticated()) {
 			throw redirect({
 				to: "/login",
@@ -33,7 +33,7 @@ export function Editor() {
 	const profile = Route.useLoaderData();
 	const initialFromUrl = getInitialInputsFromUrl(window.location.href);
 	const store = useRef(
-		createParametersStore({ name: profile?.login ?? "", ...initialFromUrl }),
+		createParametersStore({ name: profile?.login, ...initialFromUrl }),
 	).current;
 
 	return (
