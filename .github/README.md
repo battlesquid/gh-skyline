@@ -30,7 +30,7 @@ And so here we are!
 
 ![Editor](./assets/editor.png)
 ![Login](./assets/login.png)
-
+<video src="https://github.com/user-attachments/assets/93eb0251-f78b-4480-8612-5ed5dbd14ed8" />
 
 ## Features
 
