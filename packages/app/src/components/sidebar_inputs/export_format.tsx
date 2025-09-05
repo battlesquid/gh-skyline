@@ -1,9 +1,13 @@
 import { Select } from "@mantine/core";
-import { getParametersStore, useParametersContext } from "../../stores/parameters";
+import {
+	getParametersStore,
+	useParametersContext,
+} from "../../stores/parameters";
 import { ExportFormat } from "../../three/export";
 
 export function ExportFormatInput() {
-    const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.exportFormat;
+	const DEFAULT_VALUE =
+		getParametersStore().getInitialState().inputs.exportFormat;
 	const setInputs = useParametersContext((state) => state.setInputs);
 	return (
 		<Select

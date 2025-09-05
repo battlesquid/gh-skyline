@@ -1,10 +1,13 @@
 import { Select } from "@mantine/core";
-import { getParametersStore, useParametersContext } from "../../stores/parameters";
+import {
+	getParametersStore,
+	useParametersContext,
+} from "../../stores/parameters";
 import { SkylineBaseShape } from "../../three/types";
 import { capitalize } from "../../utils";
 
 export function BaseShapeInput() {
-    const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.shape;
+	const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.shape;
 	const setInputs = useParametersContext((state) => state.setInputs);
 	return (
 		<Select
