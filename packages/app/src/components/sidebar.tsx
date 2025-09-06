@@ -4,7 +4,6 @@ import {
 	Button,
 	Card,
 	Divider,
-	Group,
 	ScrollArea,
 	Stack,
 	Title,
@@ -118,10 +117,10 @@ export function Sidebar(props: SidebarProps) {
 					</Stack>
 				</AppShell.Section>
 				<AppShell.Section>
-					<Group gap="xs">
+					<Stack gap="xs">
 						<ShareButton />
 						<ExportButton />
-					</Group>
+					</Stack>
 				</AppShell.Section>
 			</Card>
 			<AppShell.Section>

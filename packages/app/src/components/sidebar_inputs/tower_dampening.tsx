@@ -12,11 +12,14 @@ export function TowerDampeningInput() {
 			min={1}
 			allowDecimal={false}
 			value={dampening}
-			onChange={(value) =>
+			clampBehavior="strict"
+			allowNegative={false}
+			onChange={(value) => {
+				console.log(value);
 				setInputs({
 					dampening: safeInt(value, 1),
-				})
-			}
+				});
+			}}
 		/>
 	);
 }

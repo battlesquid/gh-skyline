@@ -21,14 +21,16 @@ export const safeFloat = (value: string | number, min: number) => {
 	if (value === "") {
 		return min;
 	}
-	return Number.parseFloat(`${value}`);
+	const safeValue = Number.parseFloat(`${value}`);
+	return Math.max(safeValue, min);
 };
 
 export const safeInt = (value: string | number, min: number) => {
 	if (value === "") {
 		return min;
 	}
-	return Number.parseInt(`${value}`);
+	const safeValue = Number.parseInt(`${value}`);
+	return Math.max(safeValue, min);
 };
 
 export const safeString = (value: string, fallback: string) => {

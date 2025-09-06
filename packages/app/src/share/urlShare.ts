@@ -4,40 +4,63 @@ import {
 } from "lz-string";
 import { z } from "zod";
 
-import type { SkylineModelInputParameters } from "../stores/parameters";
+import {
+	DEFAULT_INPUT_PARAMETERS,
+	type SkylineModelInputParameters,
+} from "../stores/parameters";
 import { ExportFormat } from "../three/export";
 import { SkylineBaseShape } from "../three/types";
 
 export const URL_PARAM_KEY = "s";
 
 export const MinimalShareSchema = z.object({
-	v: z.literal(1),
-	type: z.literal("minimal"),
-	name: z.string(),
-	startYear: z.number().int(),
-	endYear: z.number().int(),
+	v: z.literal(1).catch(1),
+	type: z.literal("minimal").catch("minimal"),
+	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
+	startYear: z
+		.number()
+		.int()
+		.max(new Date().getFullYear())
+		.catch(DEFAULT_INPUT_PARAMETERS.startYear),
+	endYear: z
+		.number()
+		.int()
+		.max(new Date().getFullYear())
+		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
 });
 
 export const FullShareSchema = z.object({
-	v: z.literal(1),
-	type: z.literal("full"),
-	name: z.string(),
-	nameOverride: z.string(),
-	startYear: z.number().int(),
-	endYear: z.number().int(),
-	insetText: z.boolean(),
-	towerSize: z.number(),
-	dampening: z.number(),
-	shape: z.nativeEnum(SkylineBaseShape),
-	padding: z.number(),
-	textDepth: z.number(),
-	color: z.string(),
-	showContributionColor: z.boolean(),
-	scale: z.number(),
-	exportFormat: z.nativeEnum(ExportFormat),
-	logoOffset: z.number(),
-	nameOffset: z.number(),
-	yearOffset: z.number(),
+	v: z.literal(1).catch(1),
+	type: z.literal("full").catch("full"),
+	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
+	startYear: z
+		.number()
+		.int()
+		.max(new Date().getFullYear())
+		.catch(DEFAULT_INPUT_PARAMETERS.startYear),
+	endYear: z
+		.number()
+		.int()
+		.max(new Date().getFullYear())
+		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
+	nameOverride: z.string().catch(DEFAULT_INPUT_PARAMETERS.nameOverride),
+	insetText: z.boolean().catch(DEFAULT_INPUT_PARAMETERS.insetText),
+	towerSize: z.number().catch(DEFAULT_INPUT_PARAMETERS.towerSize),
+	dampening: z.number().min(1).catch(DEFAULT_INPUT_PARAMETERS.dampening),
+	shape: z.enum(SkylineBaseShape).catch(DEFAULT_INPUT_PARAMETERS.shape),
+	padding: z.number().min(0).catch(DEFAULT_INPUT_PARAMETERS.padding),
+	textDepth: z.number().catch(DEFAULT_INPUT_PARAMETERS.textDepth),
+	color: z.string().catch(DEFAULT_INPUT_PARAMETERS.color),
+	showContributionColor: z
+		.boolean()
+		.catch(DEFAULT_INPUT_PARAMETERS.showContributionColor),
+	scale: z.number().min(1).catch(DEFAULT_INPUT_PARAMETERS.scale),
+	exportFormat: z
+		.enum(ExportFormat)
+		.catch(DEFAULT_INPUT_PARAMETERS.exportFormat),
+	logoOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.logoOffset),
+	nameOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.nameOffset),
+	yearOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.yearOffset),
 });
 
 export const ShareSchema = z.union([MinimalShareSchema, FullShareSchema]);
