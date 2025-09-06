@@ -96,7 +96,7 @@ export function GenerateSection(props: GenerateSectionProps) {
 							currentStartYear = lastValidStartYear;
 						}
 						if (currentStartYear > endYear) {
-							setEndYear(currentStartYear);
+							setEndYear(Math.min(new Date().getFullYear(), currentStartYear as number));
 						}
 					}}
 					onChange={setStartYear}
@@ -116,7 +116,7 @@ export function GenerateSection(props: GenerateSectionProps) {
 							currentEndYear = lastValidEndYear;
 						}
 						if (currentEndYear < startYear) {
-							setStartYear(currentEndYear);
+							setStartYear(Math.min(new Date().getFullYear(), currentEndYear as number));
 						}
 					}}
 					onChange={setEndYear}
