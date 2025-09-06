@@ -22,7 +22,7 @@ export const safeFloat = (value: string | number, min: number) => {
 		return min;
 	}
 	const safeValue = Number.parseFloat(`${value}`);
-    return Math.max(safeValue, min);
+	return Math.max(safeValue, min);
 };
 
 export const safeInt = (value: string | number, min: number) => {
@@ -30,7 +30,7 @@ export const safeInt = (value: string | number, min: number) => {
 		return min;
 	}
 	const safeValue = Number.parseInt(`${value}`);
-    return Math.max(safeValue, min);
+	return Math.max(safeValue, min);
 };
 
 export const safeString = (value: string, fallback: string) => {

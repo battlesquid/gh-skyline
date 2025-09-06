@@ -86,9 +86,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 					placeholder="Start Year"
 					min={MIN_START_YEAR}
 					max={new Date().getFullYear()}
-                    allowNegative={false}
-                    allowDecimal={false}
-                    allowLeadingZeros={false}
+					allowNegative={false}
+					allowDecimal={false}
+					allowLeadingZeros={false}
 					stepHoldDelay={500}
 					stepHoldInterval={100}
 					value={startYear}
@@ -99,7 +99,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 							currentStartYear = lastValidStartYear;
 						}
 						if (currentStartYear > endYear) {
-							setEndYear(Math.min(new Date().getFullYear(), currentStartYear as number));
+							setEndYear(
+								Math.min(new Date().getFullYear(), currentStartYear as number),
+							);
 						}
 					}}
 					onChange={setStartYear}
@@ -109,9 +111,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 					placeholder="End Year"
 					min={MIN_START_YEAR}
 					max={new Date().getFullYear()}
-                    allowNegative={false}
-                    allowDecimal={false}
-                    allowLeadingZeros={false}
+					allowNegative={false}
+					allowDecimal={false}
+					allowLeadingZeros={false}
 					stepHoldDelay={500}
 					stepHoldInterval={100}
 					value={endYear}
@@ -122,7 +124,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 							currentEndYear = lastValidEndYear;
 						}
 						if (currentEndYear < startYear) {
-							setStartYear(Math.min(new Date().getFullYear(), currentEndYear as number));
+							setStartYear(
+								Math.min(new Date().getFullYear(), currentEndYear as number),
+							);
 						}
 					}}
 					onChange={setEndYear}
@@ -131,10 +135,10 @@ export function GenerateSection(props: GenerateSectionProps) {
 			<Button
 				fullWidth
 				className="mona-sans-wide"
-                tt="uppercase"
+				tt="uppercase"
 				disabled={name.trim() === ""}
-                variant="light"
-                size="xs"
+				variant="light"
+				size="xs"
 				onClick={() =>
 					setInputs({
 						name,
