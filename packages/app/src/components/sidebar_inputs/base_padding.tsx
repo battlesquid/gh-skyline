@@ -14,6 +14,8 @@ export function BasePaddingInput() {
 			step={0.5}
 			value={padding}
             clampBehavior="strict"
+            allowNegative={false}
+            allowLeadingZeros={false}
 			onChange={(value) =>
 				setInputs({
 					padding: safeFloat(value, 0),

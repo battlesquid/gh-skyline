@@ -86,6 +86,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 					placeholder="Start Year"
 					min={MIN_START_YEAR}
 					max={new Date().getFullYear()}
+                    allowNegative={false}
+                    allowDecimal={false}
+                    allowLeadingZeros={false}
 					stepHoldDelay={500}
 					stepHoldInterval={100}
 					value={startYear}
@@ -106,6 +109,9 @@ export function GenerateSection(props: GenerateSectionProps) {
 					placeholder="End Year"
 					min={MIN_START_YEAR}
 					max={new Date().getFullYear()}
+                    allowNegative={false}
+                    allowDecimal={false}
+                    allowLeadingZeros={false}
 					stepHoldDelay={500}
 					stepHoldInterval={100}
 					value={endYear}
@@ -123,9 +129,12 @@ export function GenerateSection(props: GenerateSectionProps) {
 				/>
 			</Group>
 			<Button
-				className="mona-sans-wide"
 				fullWidth
+				className="mona-sans-wide"
+                tt="uppercase"
 				disabled={name.trim() === ""}
+                variant="light"
+                size="xs"
 				onClick={() =>
 					setInputs({
 						name,
@@ -133,10 +142,8 @@ export function GenerateSection(props: GenerateSectionProps) {
 						endYear: endYear as number,
 					})
 				}
-				variant="light"
-				size="xs"
 			>
-				GENERATE
+				Generate
 			</Button>
 		</>
 	);

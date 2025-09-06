@@ -13,6 +13,7 @@ export function TowerDampeningInput() {
             allowDecimal={false}
             value={dampening}
             clampBehavior="strict"
+            allowNegative={false}
             onChange={(value) => {
                 console.log(value)
                 setInputs({

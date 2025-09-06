@@ -14,6 +14,8 @@ export function ScaleInput() {
 			step={0.1}
 			value={scale}
             clampBehavior="strict"
+            allowNegative={false}
+            allowLeadingZeros={false}
 			onChange={(value) => setInputs({ scale: safeFloat(value, 1) })}
 		/>
 	);
