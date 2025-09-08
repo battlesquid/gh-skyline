@@ -1,6 +1,6 @@
 .dock {
 	position: absolute;
-	bottom: 0;
+	bottom: calc(100vh - 100dvh);
 	left: 50%;
 	transform: translateX(-50%);
 }
