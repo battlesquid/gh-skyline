@@ -26,9 +26,10 @@ didn't want to install the Github CLI just to get my skyline. I liked the idea o
 
 And so here we are!
 
-## Screenshots
+## Gallery
 
 ![Editor](./assets/editor.png)
+![Multi Year](./assets/multi_year.png)
 ![Login](./assets/login.png)
 <video src="https://github.com/user-attachments/assets/93eb0251-f78b-4480-8612-5ed5dbd14ed8" />
 
