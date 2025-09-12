@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@mantine/core": "^8.2.1",
+		"@mantine/dropzone": "^8.3.1",
 		"@mantine/hooks": "^8.2.1",
 		"@octokit/graphql": "^9.0.1",
 		"@react-three/drei": "^9.122.0",

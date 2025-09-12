@@ -1,154 +1,34 @@
-import { Button, Group, NumberInput } from "@mantine/core";
-import { useValidatedState } from "@mantine/hooks";
-import { useEffect, useState } from "react";
-import {
-	getParametersStore,
-	useParametersContext,
-} from "../../stores/parameters";
-import { GitHubUsernameInput } from "./github_username_input";
+import { Tabs } from "@mantine/core";
+import { IconBrandGithubFilled, IconCode } from "@tabler/icons-react";
+import { CustomDataInput } from "./custom_data_input";
+import { GithubDataInput } from "./github_data_input";
 
 export interface GenerateSectionProps {
-	ok: boolean;
-	login: string;
+    ok: boolean;
+    login: string;
 }
 
-const MIN_START_YEAR = 2000;
 
-export function GenerateSection(props: GenerateSectionProps) {
-	const { ok } = props;
-	const initialStartYear =
-		getParametersStore().getInitialState().inputs.startYear;
-	const initialEndYear = getParametersStore().getInitialState().inputs.endYear;
-	const setInputs = useParametersContext((state) => state.setInputs);
-	const nameFromStore = useParametersContext((state) => state.inputs.name);
+export function GenerateSection({ ok, login }: GenerateSectionProps) {
 
-	const [name, setName] = useState(nameFromStore);
-	const [modified, setModified] = useState(false);
+    return (
+        <Tabs defaultValue="github" >
+            <Tabs.List grow mb={8}>
+                <Tabs.Tab value="github" leftSection={<IconBrandGithubFilled size={12} />}>
+                    Github
+                </Tabs.Tab>
+                <Tabs.Tab  value="custom" leftSection={<IconCode size={12} />}>
+                    Custom
+                </Tabs.Tab>
+            </Tabs.List>
 
-	const [
-		{
-			value: startYear,
-			lastValidValue: lastValidStartYear,
-			valid: startYearValid,
-		},
-		setStartYear,
-	] = useValidatedState<string | number>(
-		initialStartYear,
-		(value) => {
-			if (typeof value === "string" && value.trim() === "") {
-				return false;
-			}
-			return true;
-		},
-		true,
-	);
+            <Tabs.Panel value="github">
+                <GithubDataInput ok={ok} login={login} />
+            </Tabs.Panel>
 
-	const [
-		{ value: endYear, lastValidValue: lastValidEndYear, valid: endYearValid },
-		setEndYear,
-	] = useValidatedState<string | number>(
-		initialEndYear,
-		(value) => {
-			if (typeof value === "string" && value.trim() === "") {
-				return false;
-			}
-			return true;
-		},
-		true,
-	);
-
-	useEffect(() => {
-		setModified(false);
-	}, [ok]);
-
-	useEffect(() => {
-		setName(nameFromStore);
-	}, [nameFromStore]);
-
-	useEffect(() => {
-		if (!ok) {
-			setModified(true);
-		}
-	}, [name]);
-
-	return (
-		<>
-			<GitHubUsernameInput
-				label="Github Username"
-				placeholder="Github Username"
-				value={name}
-				onChange={setName}
-				error={ok || modified ? "" : `Unable to find profile for "${name}".`}
-			/>
-			<Group grow>
-				<NumberInput
-					label="Start Year"
-					placeholder="Start Year"
-					min={MIN_START_YEAR}
-					max={new Date().getFullYear()}
-					allowNegative={false}
-					allowDecimal={false}
-					allowLeadingZeros={false}
-					stepHoldDelay={500}
-					stepHoldInterval={100}
-					value={startYear}
-					onBlur={() => {
-						let currentStartYear = startYear;
-						if (!startYearValid && lastValidStartYear !== undefined) {
-							setStartYear(lastValidStartYear);
-							currentStartYear = lastValidStartYear;
-						}
-						if (currentStartYear > endYear) {
-							setEndYear(
-								Math.min(new Date().getFullYear(), currentStartYear as number),
-							);
-						}
-					}}
-					onChange={setStartYear}
-				/>
-				<NumberInput
-					label="End Year"
-					placeholder="End Year"
-					min={MIN_START_YEAR}
-					max={new Date().getFullYear()}
-					allowNegative={false}
-					allowDecimal={false}
-					allowLeadingZeros={false}
-					stepHoldDelay={500}
-					stepHoldInterval={100}
-					value={endYear}
-					onBlur={() => {
-						let currentEndYear = endYear;
-						if (!endYearValid && lastValidEndYear !== undefined) {
-							setEndYear(lastValidEndYear);
-							currentEndYear = lastValidEndYear;
-						}
-						if (currentEndYear < startYear) {
-							setStartYear(
-								Math.min(new Date().getFullYear(), currentEndYear as number),
-							);
-						}
-					}}
-					onChange={setEndYear}
-				/>
-			</Group>
-			<Button
-				fullWidth
-				className="mona-sans-wide"
-				tt="uppercase"
-				disabled={name.trim() === ""}
-				variant="light"
-				size="xs"
-				onClick={() =>
-					setInputs({
-						name,
-						startYear: startYear as number,
-						endYear: endYear as number,
-					})
-				}
-			>
-				Generate
-			</Button>
-		</>
-	);
+            <Tabs.Panel value="custom">
+                <CustomDataInput />
+            </Tabs.Panel>
+        </Tabs>
+    );
 }

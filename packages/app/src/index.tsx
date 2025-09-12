@@ -1,15 +1,16 @@
 import { MantineProvider } from "@mantine/core";
-import "@mantine/core/styles.css";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { PostHogProvider } from "posthog-js/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "urql";
 import { client } from "./api/client";
+import { routeTree } from "./routeTree.gen";
 import { shadcnCssVariableResolver } from "./theme/css_variable_resolver";
 import { shadcnTheme } from "./theme/theme";
+import "@mantine/core/styles.css";
+import '@mantine/dropzone/styles.css';
 import "./theme/style.css";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { PostHogProvider } from "posthog-js/react";
-import { routeTree } from "./routeTree.gen";
 
 const router = createRouter({ routeTree });
 declare module "@tanstack/react-router" {
