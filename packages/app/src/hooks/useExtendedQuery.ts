@@ -4,6 +4,8 @@ import type { OperationResult } from "urql";
 import { client } from "../api/client";
 import { ContributionQuery } from "../api/query";
 import type { ContributionWeeks } from "../api/types";
+import { isAuthenticated } from "../api/auth";
+import { SkylineDatasource, useParametersContext } from "../stores/parameters";
 
 interface ExtendedQueryProps {
 	name?: string;
@@ -53,21 +55,33 @@ const doRangeQuery = async (props: ExtendedQueryProps) => {
 	}
 };
 
-export const useExtendedQuery = (
-	props: ExtendedQueryProps,
-): ExtendedQueryResult => {
+export const useExtendedQuery = (): ExtendedQueryResult => {
+	const name = useParametersContext((state) => state.inputs.name);
+	const start = useParametersContext((state) => state.inputs.startYear);
+	const end = useParametersContext((state) => state.inputs.endYear);
+	const datasource = useParametersContext((state) => state.inputs.datasource);
+	const customData = useParametersContext((state) => state.inputs.customData);
+
 	const [years, setYears] = useState<ContributionWeeks[]>([[]]);
 	const [fetching, setFetching] = useState(false);
 	const [ok, setOk] = useState(true);
+
 	useEffect(() => {
-		if (props.name === undefined) {
+		if (datasource === SkylineDatasource.Custom && customData.length > 0) {
+			setYears(customData);
+			setOk(true);
+			setFetching(false);
+			return;
+		}
+
+		if (!isAuthenticated() || name === undefined) {
 			return;
 		}
 
 		setFetching(true);
 		setOk(true);
 		setYears([[]]);
-		doRangeQuery(props)
+		doRangeQuery({ name, start, end })
 			.then((result) => {
 				setYears(result);
 				if (result.length === 0) {
@@ -76,6 +90,6 @@ export const useExtendedQuery = (
 			})
 			.catch(console.error)
 			.finally(() => setFetching(false));
-	}, [props.name, props.start, props.end]);
+	}, [datasource, customData, name, start, end]);
 	return { years, fetching, ok };
 };

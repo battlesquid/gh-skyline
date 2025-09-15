@@ -11,13 +11,14 @@ import {
 import { IconCheck, IconCopy, IconShare2 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { buildShareLinks } from "../../share/urlShare";
-import { useParametersContext } from "../../stores/parameters";
+import { SkylineDatasource, useParametersContext } from "../../stores/parameters";
 
 export function ShareButton() {
 	const [opened, setOpened] = useState(false);
 	const inputs = useParametersContext((s) => s.inputs);
 	const [minimal, setMinimal] = useState<string>("");
 	const [full, setFull] = useState<string>("");
+	const datasource = useParametersContext((state) => state.inputs.datasource);
 
 	useEffect(() => {
 		if (!opened) return;
@@ -30,6 +31,7 @@ export function ShareButton() {
 		<Popover opened={opened} onChange={setOpened} position="top" withArrow>
 			<Popover.Target>
 				<Button
+					disabled={datasource === SkylineDatasource.Custom}
 					variant="light"
 					onClick={() => setOpened((v) => !v)}
 					leftSection={<IconShare2 size={16} />}

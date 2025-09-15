@@ -15,7 +15,6 @@ export function TowerDampeningInput() {
 			clampBehavior="strict"
 			allowNegative={false}
 			onChange={(value) => {
-				console.log(value);
 				setInputs({
 					dampening: safeInt(value, 1),
 				});

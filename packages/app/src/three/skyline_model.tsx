@@ -18,6 +18,8 @@ import { ContributionTower } from "./contribution_tower";
 import type { SkylineProps } from "./skyline";
 import { SkylineBase } from "./skyline_base";
 import { SkylineObjectNames } from "./utils";
+import { getWeekNo } from "../utils";
+import { useShallow } from "zustand/shallow";
 
 interface TowersRender {
 	towers: (JSX.Element | null)[];
@@ -30,14 +32,14 @@ export interface SkylineModelProps extends SkylineProps {
 
 export function SkylineModel({ group, years }: SkylineModelProps) {
 	const [initialized, setInitialized] = useState(false);
-	const computed = useParametersContext((state) => state.computed);
-	const inputs = useParametersContext((state) => state.inputs);
+	const computed = useParametersContext(useShallow((state) => state.computed));
+	const inputs = useParametersContext(useShallow((state) => state.inputs));
 
-	const setDirty = useModelStore((state) => state.setDirty);
-	const setModel = useModelStore((state) => state.setModel);
+	const setDirty = useModelStore(useShallow((state) => state.setDirty));
+	const setModel = useModelStore(((state) => state.setModel));
 
-	const reset = useControlsStore((state) => state.reset);
-	const clearReset = useControlsStore((state) => state.clearReset);
+	const reset = useControlsStore(useShallow((state) => state.reset));
+	const clearReset = useControlsStore(useShallow((state) => state.clearReset));
 
 	const bounds = useBounds();
 	let boundsTimeout: number | undefined;
@@ -65,6 +67,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 
 		return clearBoundsTimeout;
 	}, [
+		inputs.datasource,
 		inputs.dampening,
 		inputs.name,
 		inputs.nameOverride,
@@ -91,6 +94,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		weekIdx: number,
 		weekOffset: number,
 		dayIdx: number,
+		dayOffset: number,
 	) => {
 		if (day.contributionCount === 0) {
 			return null;
@@ -108,14 +112,14 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 				day={day}
 				color={color}
 				x={
-					weekIdx * inputs.towerSize -
+					(weekIdx + weekOffset) * inputs.towerSize -
 					computed.halfModelLength +
 					computed.towerSizeOffset
 				}
 				y={
 					centerOffset +
 					YEAR_OFFSET +
-					((dayIdx + weekOffset) * inputs.towerSize -
+					((dayIdx + dayOffset) * inputs.towerSize -
 						computed.halfModelWidth +
 						computed.towerSizeOffset)
 				}
@@ -130,11 +134,12 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		yearIdx: number,
 		weekIdx: number,
 		weekOffset: number,
+		dayOffset: number,
 	) => {
 		return week.contributionDays.reduce<TowersRender>(
 			(prev, day, dayIdx) => {
-				const tower = renderDay(day, yearIdx, weekIdx, weekOffset, dayIdx);
-				const count = +(tower !== null);
+				const tower = renderDay(day, yearIdx, weekIdx, weekOffset, dayIdx, dayOffset);
+				const count = 1;
 				return { towers: prev.towers.concat(tower), count: prev.count + count };
 			},
 			{ towers: [], count: 0 },
@@ -144,12 +149,14 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 	const renderYear = (weeks: ContributionWeeks, yearIdx: number) => {
 		return weeks.reduce<TowersRender>(
 			(prev, week, weekIdx) => {
-				const weekOffset = weekIdx === 0 ? getFirstDayOffset(week, weekIdx) : 0;
+				const dayOffset = weekIdx === 0 ? getFirstDayOffset(week, weekIdx) : 0;
+				const weekOffset = getWeekNo(new Date(weeks[0].contributionDays[0].date))
 				const { towers, count } = renderWeek(
 					week,
 					yearIdx,
 					weekIdx,
 					weekOffset,
+					dayOffset,
 				);
 				return {
 					towers: prev.towers.concat(towers),
@@ -182,7 +189,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 				<group name={SkylineObjectNames.TowersParent}>
 					<Instances
 						name={SkylineObjectNames.Towers}
-						key={`${inputs.name}-${computed.formattedYear}-${inputs.showContributionColor}`}
+						key={`${count}-${inputs.name}-${computed.formattedYear}-${inputs.showContributionColor}`}
 						limit={count}
 						castShadow
 						receiveShadow

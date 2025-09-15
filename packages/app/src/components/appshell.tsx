@@ -3,7 +3,6 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import type { UserProfile } from "../api/auth";
 import { useExtendedQuery } from "../hooks/useExtendedQuery";
 import { useUrlStateSync } from "../hooks/useUrlState";
-import { useParametersContext } from "../stores/parameters";
 import { MQ } from "../theme/media";
 import { Skyline } from "../three/skyline";
 import { HoverCard } from "./hover_card";
@@ -15,10 +14,6 @@ export interface EditorAppShellProps {
 }
 
 export function EditorAppShell({ profile }: EditorAppShellProps) {
-	const name = useParametersContext((state) => state.inputs.name);
-	const start = useParametersContext((state) => state.inputs.startYear);
-	const end = useParametersContext((state) => state.inputs.endYear);
-
 	const [mobileOpened] = useDisclosure();
 	const [desktopOpened] = useDisclosure(true);
 	const [drawerOpened, { open: openDrawer, close: closeDrawer }] =
@@ -26,11 +21,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 
 	const isMobile = useMediaQuery(MQ.sm);
 
-	const { years, fetching, ok } = useExtendedQuery({
-		name,
-		start,
-		end,
-	});
+	const { years, fetching, ok } = useExtendedQuery();
 
 	useUrlStateSync();
 

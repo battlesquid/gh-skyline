@@ -1,8 +1,9 @@
 import { Group, Text } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
-import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
+import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
 import csv from "csvtojson";
 import { ContributionDay, ContributionWeeks } from "../../api/types";
+import { useParametersContext } from "../../stores/parameters";
 
 const toJSON = async (data: string, ext: string): Promise<Record<string, unknown>[]> => {
     if (ext === "csv") {
@@ -20,7 +21,7 @@ type ParseResult = {
 const isDate = (value: unknown) => !isNaN(new Date(`${value}`).getTime());
 const isNumber = (value: unknown) => /\d+/.test(`${value}`);
 
-const parseRecord = (record: Record<string, unknown>, dateKey: string, countKey: string): ContributionDay => {
+const toContributionDay = (record: Record<string, unknown>, dateKey: string, countKey: string): ContributionDay => {
     const date = new Date(record[dateKey] as string);
     const contributionCount = Number.parseInt(`${record[countKey]}`);
     const weekday = date.getUTCDay();
@@ -33,7 +34,7 @@ const parseRecord = (record: Record<string, unknown>, dateKey: string, countKey:
     }
 }
 
-const parseRecords = (data: Record<string, unknown>[]): ParseResult => {
+const toContributionCalendar = (data: Record<string, unknown>[]): ParseResult => {
     const [baseline, ...rest] = data;
     let dateKey: string | undefined;
     let countKey: string | undefined;
@@ -63,11 +64,11 @@ const parseRecords = (data: Record<string, unknown>[]): ParseResult => {
         };
     }
     const records = data
-        .map(d => parseRecord(d, dateKey, countKey))
+        .map(d => toContributionDay(d, dateKey, countKey))
         .sort((r1, r2) => r1.date.getTime() - r2.date.getTime());
-    const START_YEAR = records[0].date.getFullYear();
+    const START_YEAR = records[0].date.getUTCFullYear();
     const years: ContributionWeeks[] = records.reduce<ContributionWeeks[]>((acc, curr) => {
-        const idx = curr.date.getFullYear() - START_YEAR;
+        const idx = curr.date.getUTCFullYear() - START_YEAR;
         acc[idx] ??= [];
         if (curr.weekday === 0 || acc[idx].at(-1) === undefined) {
             acc[idx].push({
@@ -86,14 +87,17 @@ const parseRecords = (data: Record<string, unknown>[]): ParseResult => {
 }
 
 export function CustomDataInput() {
+    const setInputs = useParametersContext((state) => state.setInputs);
     return (
         <Dropzone
             onDrop={async ([file]) => {
-                const [name, ext] = file.name.split(".");
+                const [, ext] = file.name.split(".");
                 const data = await file.text();
                 const json = await toJSON(data, ext);
-                console.log(name, json);
-                console.log(parseRecords(json));
+                const { error, data: years } = toContributionCalendar(json);
+                if (error === null) {
+                    setInputs({ customData: years });
+                }
             }}
             onReject={(files) => console.log('rejected files', files)}
             accept={["application/json", "text/csv"]}
@@ -107,11 +111,11 @@ export function CustomDataInput() {
                     <IconX size={52} color="var(--mantine-color-red-6)" stroke={1.5} />
                 </Dropzone.Reject>
                 <Dropzone.Idle>
-                    <IconPhoto size={52} color="var(--mantine-color-dimmed)" stroke={1.5} />
+                    <IconFile size={52} color="var(--mantine-color-dimmed)" stroke={1.5} />
                 </Dropzone.Idle>
 
                 <div>
-                    <Text size="xl" inline>
+                    <Text size="sm" inline>
                         Drag a CSV or JSON file here
                     </Text>
 

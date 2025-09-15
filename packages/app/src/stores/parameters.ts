@@ -6,8 +6,15 @@ import { ExportFormat } from "../three/export";
 import { SkylineBaseShape } from "../three/types";
 import { safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
+import { ContributionWeeks } from "../api/types";
+
+export enum SkylineDatasource {
+	Github = "github",
+	Custom = "custom"
+}
 
 export interface SkylineModelInputParameters {
+	datasource: SkylineDatasource;
 	name: string;
 	nameOverride: string;
 	insetText: boolean;
@@ -27,6 +34,7 @@ export interface SkylineModelInputParameters {
 	logoOffset: number;
 	nameOffset: number;
 	yearOffset: number;
+	customData: ContributionWeeks[];
 }
 
 export interface SkylineModelComputedParameters {
@@ -96,6 +104,7 @@ export const getComputedParameters = (
 };
 
 export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
+	datasource: SkylineDatasource.Custom,
 	name: "battlesquid",
 	nameOverride: "",
 	startYear: new Date().getFullYear(),
@@ -115,6 +124,7 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	logoOffset: 10,
 	nameOffset: 15,
 	yearOffset: 10,
+	customData: []
 });
 
 export const DEFAULT_COMPUTED_PARAMETERS = Object.freeze(

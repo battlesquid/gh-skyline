@@ -43,3 +43,14 @@ export const isNullish = (value: unknown): value is null | undefined => {
 	}
 	return false;
 };
+
+// gets the week number relative to the year
+export const getWeekNo = (date: Date) => {
+	const d = new Date(
+		Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+	);
+	const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+	return (
+		Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7) - 1
+	);
+}
