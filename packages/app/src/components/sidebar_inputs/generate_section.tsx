@@ -3,6 +3,8 @@ import { IconBrandGithubFilled, IconCode } from "@tabler/icons-react";
 import { CustomDataInput } from "./custom_data_input";
 import { GithubDataInput } from "./github_data_input";
 import { SkylineDatasource, useParametersContext } from "../../stores/parameters";
+import { isAuthenticated } from "../../api/auth";
+import { LoginInput } from "./login_input";
 
 export interface GenerateSectionProps {
     ok: boolean;
@@ -30,7 +32,8 @@ export function GenerateSection({ ok, login }: GenerateSectionProps) {
             </Tabs.List>
 
             <Tabs.Panel value="github">
-                <GithubDataInput ok={ok} login={login} />
+                {isAuthenticated() && <GithubDataInput ok={ok} login={login} />}
+                {!isAuthenticated() && <LoginInput />}
             </Tabs.Panel>
 
             <Tabs.Panel value="custom">

@@ -67,7 +67,7 @@ const toContributionCalendar = (data: Record<string, unknown>[]): ParseResult =>
         .map(d => toContributionDay(d, dateKey, countKey))
         .sort((r1, r2) => r1.date.getTime() - r2.date.getTime());
     const START_YEAR = records[0].date.getUTCFullYear();
-    const years: ContributionWeeks[] = records.reduce<ContributionWeeks[]>((acc, curr) => {
+    const years = records.reduce<ContributionWeeks[]>((acc, curr) => {
         const idx = curr.date.getUTCFullYear() - START_YEAR;
         acc[idx] ??= [];
         if (curr.weekday === 0 || acc[idx].at(-1) === undefined) {
@@ -92,11 +92,17 @@ export function CustomDataInput() {
         <Dropzone
             onDrop={async ([file]) => {
                 const [, ext] = file.name.split(".");
-                const data = await file.text();
-                const json = await toJSON(data, ext);
-                const { error, data: years } = toContributionCalendar(json);
+                const text = await file.text();
+                const json = await toJSON(text, ext);
+                const { error, data } = toContributionCalendar(json);
                 if (error === null) {
-                    setInputs({ customData: years });
+                    const startYear = data[0][0].firstDay.getUTCFullYear();
+                    const endYear = data.at(-1)?.[0].firstDay.getUTCFullYear();
+                    setInputs({
+                        customData: data,
+                        startYear,
+                        endYear
+                    });
                 }
             }}
             onReject={(files) => console.log('rejected files', files)}

@@ -50,6 +50,8 @@ export const Route = createFileRoute("/login")({
 	},
 });
 
+// TODO: research putting redirect in response header
+
 function Login() {
 	const router = useRouter();
 	const { code, redirect: redirectUrl } = Route.useSearch();

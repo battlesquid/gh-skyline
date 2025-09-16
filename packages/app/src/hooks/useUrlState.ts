@@ -7,22 +7,37 @@ import {
 	URL_PARAM_KEY,
 } from "../share/urlShare";
 import { SkylineDatasource, useParametersContext } from "../stores/parameters";
+import { isAuthenticated } from "../api/auth";
+
+const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
 
 export function useUrlStateSync() {
 	const inputs = useParametersContext((s) => s.inputs);
 	const setInputs = useParametersContext((s) => s.setInputs);
 
 	useEffect(() => {
-		const initial = getInitialInputsFromUrl(window.location.href);
-		if (Object.keys(initial).length) {
-			setInputs(initial);
+		if (!isAuthenticated()) {
+			setInputs({ datasource: SkylineDatasource.Custom });
+			window.sessionStorage.setItem("redirect", window.location.href);
+			return;
 		}
+		const storedRedirect = sessionStorage.getItem(REDIRECT_STORAGE_KEY);
+		if (storedRedirect) {
+			sessionStorage.removeItem(REDIRECT_STORAGE_KEY);
+			window.location.replace(storedRedirect);
+			return;
+		}
+		// if (redirectUrl && typeof redirectUrl === "string") {
+		// 	window.location.replace(redirectUrl);
+		// 	return;
+		// }
 	}, []);
 
 	const prevEncodedRef = useRef<string | null>(null);
 	useEffect(() => {
 		const url = new URL(window.location.href);
-		if (inputs.datasource === SkylineDatasource.Custom) {
+		if (!isAuthenticated() || inputs.datasource === SkylineDatasource.Custom) {
+			prevEncodedRef.current = "";
 			url.searchParams.delete(URL_PARAM_KEY);
 			window.history.replaceState({}, "", url);
 			return;

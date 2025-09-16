@@ -7,6 +7,7 @@ import { SkylineBaseShape } from "../three/types";
 import { safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
 import { ContributionWeeks } from "../api/types";
+import { SAMPLE_DATA } from "../data";
 
 export enum SkylineDatasource {
 	Github = "github",
@@ -104,8 +105,8 @@ export const getComputedParameters = (
 };
 
 export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
-	datasource: SkylineDatasource.Custom,
-	name: "battlesquid",
+	datasource: SkylineDatasource.Github,
+	name: "Github Skyline",
 	nameOverride: "",
 	startYear: new Date().getFullYear(),
 	endYear: new Date().getFullYear(),
@@ -124,7 +125,7 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	logoOffset: 10,
 	nameOffset: 15,
 	yearOffset: 10,
-	customData: []
+	customData: SAMPLE_DATA
 });
 
 export const DEFAULT_COMPUTED_PARAMETERS = Object.freeze(
