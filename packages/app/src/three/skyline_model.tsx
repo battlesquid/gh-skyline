@@ -12,6 +12,7 @@ import { useControlsStore } from "../stores/controls";
 import { useModelStore } from "../stores/model";
 import {
 	DEFAULT_INPUT_PARAMETERS,
+	SkylineDatasource,
 	useParametersContext,
 } from "../stores/parameters";
 import { ContributionTower } from "./contribution_tower";
@@ -20,6 +21,8 @@ import { SkylineBase } from "./skyline_base";
 import { SkylineObjectNames } from "./utils";
 import { getWeekNo } from "../utils";
 import { useShallow } from "zustand/shallow";
+import { getHeatmapColors } from "../heatmap";
+import { HEATMAP_COLORS } from "../api/constants";
 
 interface TowersRender {
 	towers: (JSX.Element | null)[];
@@ -135,6 +138,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		weekIdx: number,
 		weekOffset: number,
 		dayOffset: number,
+		heatmap: string[][]
 	) => {
 		return week.contributionDays.reduce<TowersRender>(
 			(prev, day, dayIdx) => {
@@ -146,7 +150,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		);
 	};
 
-	const renderYear = (weeks: ContributionWeeks, yearIdx: number) => {
+	const renderYear = (weeks: ContributionWeeks, yearIdx: number, heatmap: string[][]) => {
 		return weeks.reduce<TowersRender>(
 			(prev, week, weekIdx) => {
 				const dayOffset = weekIdx === 0 ? getFirstDayOffset(week, weekIdx) : 0;
@@ -157,6 +161,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 					weekIdx,
 					weekOffset,
 					dayOffset,
+					heatmap
 				);
 				return {
 					towers: prev.towers.concat(towers),
@@ -168,9 +173,19 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 	};
 
 	const render = () => {
+		const heatmap = inputs.datasource === SkylineDatasource.Custom
+			? years.map(weeks =>
+				getHeatmapColors(
+					weeks.flatMap(w => w.contributionDays.flatMap(d => d)),
+					day => day.contributionCount
+				))
+			: [];
+
+		console.log(heatmap)
+
 		return years.reduce<TowersRender>(
 			(prev, weeks, yearIdx) => {
-				const { towers, count } = renderYear(weeks, yearIdx);
+				const { towers, count } = renderYear(weeks, yearIdx, heatmap);
 				return {
 					towers: prev.towers.concat(towers),
 					count: prev.count + count,

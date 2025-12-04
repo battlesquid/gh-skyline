@@ -25,7 +25,7 @@ export function Profile({ profile }: ProfileProps) {
 
 	const handleLogout = async () => {
 		logout();
-		router.navigate({ to: "/login", reloadDocument: true });
+		router.navigate({ to: "/", reloadDocument: true });
 	};
 
 	return (
