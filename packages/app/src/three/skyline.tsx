@@ -8,6 +8,7 @@ import { useParametersContext } from "../stores/parameters";
 import { Cameras } from "./cameras";
 import { CameraControls } from "./controls";
 import { SkylineModel } from "./skyline_model";
+import { SynthwaveParticles } from "./synthwave_particles";
 
 export interface SkylineProps {
 	years: ContributionWeeks[];
@@ -74,6 +75,10 @@ export function Skyline(props: SkylineProps) {
 					fadeStrength={10}
 					fadeFrom={1}
 					infiniteGrid={true}
+				/>
+				<SynthwaveParticles
+					position={[0, -computed.platformHeight + 0.05, 0]}
+					gridSize={40}
 				/>
 			</Suspense>
 		</Canvas>
