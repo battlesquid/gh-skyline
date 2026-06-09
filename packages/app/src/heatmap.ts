@@ -37,17 +37,14 @@ export const getHeatmapColors = <T>(
     valueGetter: (item: T) => number,
     colors: string[] = HEATMAP_COLORS
 ): string[] => {
-    const iqr = computeIQR(items.map(valueGetter));
-    if (iqr === null) {
-        return [];
-    }
-    console.log(iqr)
+    const max = Math.max(...items.map(valueGetter));
     const buckets = colors.length;
-    const { upperOutlierBound } = iqr;
-    const bucketSize = upperOutlierBound / buckets;
+    const bucketSize = max / buckets;
+    console.log("Bucket Size: ", bucketSize, "Max: ", max)
+
     const heatmap = items.map(item => {
-        const value = Math.min(valueGetter(item), upperOutlierBound);
-        const bucket = Math.floor(value / bucketSize);
+        const value = Math.min(valueGetter(item), max);
+        const bucket = Math.min(Math.floor(value / bucketSize), colors.length - 1);
         console.log(value, bucket)
         return colors[bucket];
     });
