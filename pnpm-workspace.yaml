@@ -1,9 +1,8 @@
 packages:
   - packages/*
-onlyBuiltDependencies:
-  - '@biomejs/biome'
-  - '@swc/core'
-  - core-js
-  - esbuild
-  - sharp
-  - workerd
+allowBuilds:
+  core-js: true
+  esbuild: true
+  sharp: true
+  workerd: true
+
