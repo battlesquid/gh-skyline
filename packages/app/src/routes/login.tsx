@@ -19,11 +19,11 @@ import {
 	stagger,
 } from "animejs";
 import { useEffect, useRef } from "react";
-import { isAuthenticated, resolveToken } from "../api/auth";
-import ContributionBackground from "../components/contribution-background";
-import { MQ } from "../theme/media";
-import "../styles/login.css";
-import "../styles/page.css";
+import { isAuthenticated, resolveToken } from "@/api/auth";
+import ContributionBackground from "@/components/contribution-background";
+import { MQ } from "@/theme/media";
+import "@/styles/login.css";
+import "@/styles/page.css";
 
 const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
 

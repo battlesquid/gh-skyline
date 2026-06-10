@@ -1,5 +1,5 @@
-import { client } from "./client";
-import { UserQuery } from "./query";
+import { client } from "@/api/client";
+import { UserQuery } from "@/api/query";
 
 const TOKEN_KEY = "token";
 

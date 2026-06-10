@@ -1,6 +1,6 @@
 import { NumberInput } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
-import { safeFloat } from "../../utils";
+import { useParametersContext } from "@/stores/parameters";
+import { safeFloat } from "@/utils";
 
 export function ScaleInput() {
 	const scale = useParametersContext((state) => state.inputs.scale);

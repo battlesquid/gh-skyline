@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 import { createStore, useStore } from "zustand";
-import { DAYS_IN_WEEK, WEEKS_IN_YEAR } from "../api/constants";
-import { formatYearText } from "../api/utils";
-import { ExportFormat } from "../three/utils/export";
-import { safeString } from "../utils";
+import { DAYS_IN_WEEK, WEEKS_IN_YEAR } from "@/api/constants";
+import { formatYearText } from "@/api/utils";
+import { ExportFormat } from "@/three/utils/export";
+import { safeString } from "@/utils";
 import { DEFAULT_FONT } from "./fonts";
 
 export enum SkylineBaseShape {
@@ -104,7 +104,7 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	nameOverride: "",
 	startYear: new Date().getFullYear(),
 	endYear: new Date().getFullYear(),
-	color: "#7A7474",
+	color: "#a6a6a6",
 	font: DEFAULT_FONT,
 	insetText: false,
 	showContributionColor: false,

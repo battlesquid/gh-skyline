@@ -1,7 +1,7 @@
-import { useControlsStore } from "../stores/controls";
+import { useControlsStore } from "@/stores/controls";
 import { CameraControls as DreiCameraControls } from "@react-three/drei";
 import { useEffect, useRef } from "react";
-import { useModelStore } from "../stores/model";
+import { useModelStore } from "@/stores/model";
 
 const cameraPadding = (padding: number) => ({
 	paddingTop: padding,

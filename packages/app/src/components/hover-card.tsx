@@ -1,6 +1,6 @@
 import { Card, Text } from "@mantine/core";
 import { useRef } from "react";
-import { useTowerStore } from "../stores/tower";
+import { useTowerStore } from "@/stores/tower";
 
 export function HoverCard() {
 	const position = useTowerStore((state) => state.position);

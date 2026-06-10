@@ -1,9 +1,9 @@
 import { AppShell, Drawer, Text } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import type { UserProfile } from "../api/auth";
-import { useUrlStateSync } from "../hooks/use-url-state";
-import { MQ } from "../theme/media";
-import Viewer from "../three/viewer";
+import type { UserProfile } from "@/api/auth";
+import { useUrlStateSync } from "@/hooks/use-url-state";
+import { MQ } from "@/theme/media";
+import Viewer from "@/three/viewer";
 import { HoverCard } from "./hover-card";
 import Loading from "./loading";
 import { Sidebar } from "./sidebar";

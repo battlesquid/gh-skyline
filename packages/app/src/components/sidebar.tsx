@@ -16,8 +16,8 @@ import {
 	IconPaint,
 	IconTextSize,
 } from "@tabler/icons-react";
-import type { UserProfile } from "../api/auth";
-import accordionClasses from "../styles/accordion.module.css";
+import type { UserProfile } from "@/api/auth";
+import accordionClasses from "@/styles/accordion.module.css";
 import { Profile } from "./profile";
 import { BasePaddingInput } from "./sidebar/base-padding";
 import { BaseShapeInput } from "./sidebar/base-shape";
@@ -32,7 +32,7 @@ import { ScaleInput } from "./sidebar/scale";
 import { ShareButton } from "./sidebar/share";
 import { TowerDampeningInput } from "./sidebar/tower-dampening";
 import { UsernameOverrideInput } from "./sidebar/username-override";
-import { useContributionQueryStore } from "../stores/query";
+import { useContributionQueryStore } from "@/stores/query";
 
 interface SidebarProps {
 	fromDrawer?: boolean;

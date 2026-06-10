@@ -14,8 +14,8 @@ import {
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconLoader, IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
-import { client } from "../../api/client";
-import { SearchUsersQuery } from "../../api/query";
+import { client } from "@/api/client";
+import { SearchUsersQuery } from "@/api/query";
 
 export type GitHubUser = {
 	login: string;

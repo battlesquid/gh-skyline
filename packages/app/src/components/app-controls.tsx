@@ -6,10 +6,10 @@ import {
 	IconPencil,
 	IconRotate360,
 } from "@tabler/icons-react";
-import { type ProjectionMode, useControlsStore } from "../stores/controls";
-import classes from "../styles/dock.module.css";
-import { MQ } from "../theme/media";
-import { capitalize } from "../utils";
+import { type ProjectionMode, useControlsStore } from "@/stores/controls";
+import classes from "@/styles/dock.module.css";
+import { MQ } from "@/theme/media";
+import { capitalize } from "@/utils";
 
 export function SkylineControls({
 	onOpenDrawer,

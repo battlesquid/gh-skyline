@@ -1,8 +1,8 @@
 import { Instance, type PositionMesh } from "@react-three/drei";
 import { useRef } from "react";
 import { Color } from "three";
-import type { ContributionDay } from "../../api/types";
-import { useTowerStore } from "../../stores/tower";
+import type { ContributionDay } from "@/api/types";
+import { useTowerStore } from "@/stores/tower";
 
 interface ContributionTowerProps {
 	x: number;

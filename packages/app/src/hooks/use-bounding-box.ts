@@ -5,8 +5,8 @@ import {
 	useState
 } from "react";
 import { Mesh, type Object3D, Vector3 } from "three";
-import { isNullish } from "../utils";
-import { getThreeBoundingBox } from "../three/utils/bounding-box";
+import { isNullish } from "@/utils";
+import { getThreeBoundingBox } from "@/three/utils/bounding-box";
 
 export interface BoundingBoxProps {
 	obj: RefObject<Object3D | null> | undefined;

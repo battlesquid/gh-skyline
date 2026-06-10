@@ -1,6 +1,6 @@
 import { authExchange } from "@urql/exchange-auth";
 import { Client, cacheExchange, fetchExchange } from "urql";
-import { getToken, isAuthenticated, logout } from "./auth";
+import { getToken, isAuthenticated, logout } from "@/api/auth";
 
 export const client = new Client({
 	url: "https://api.github.com/graphql",

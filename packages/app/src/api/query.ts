@@ -1,4 +1,4 @@
-import { graphql } from "./graphql";
+import { graphql } from "@/api/graphql";
 
 export const ContributionQuery = graphql(`
   query ContributionQuery($name: String!, $start: DateTime!, $end: DateTime!) {

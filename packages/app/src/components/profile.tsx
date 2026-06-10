@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import { useRouter } from "@tanstack/react-router";
-import { logout, type UserProfile } from "../api/auth";
+import { logout, type UserProfile } from "@/api/auth";
 
 export interface ProfileProps {
 	profile: UserProfile | null;

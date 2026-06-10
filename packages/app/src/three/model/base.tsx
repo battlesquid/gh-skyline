@@ -13,6 +13,7 @@ import { useParametersContext } from "../../stores/parameters";
 import { SkylineBaseShape } from "../../stores/parameters";
 import { GROUPS } from "../utils/constants";
 import { useContributionQueryStore } from "../../stores/query";
+import { Selection } from "@react-three/postprocessing";
 
 
 export function SkylineBase() {
@@ -111,6 +112,7 @@ export function SkylineBase() {
 
 	return (
 		<group name={GROUPS.BASE}>
+			<Selection>
 			<mesh
 				geometry={frustum.geometry}
 				position={[0, -computed.halfPlatformHeight, TEXT_EXTRUSION_OFFSET]}
@@ -119,15 +121,16 @@ export function SkylineBase() {
 				castShadow
 				receiveShadow
 			>
-				<lineSegments
+				{/* <lineSegments
 					name="edges"
 					renderOrder={10}
 				>
 					<edgesGeometry args={[frustum.geometry, 90]} />
 					<lineBasicMaterial color={"#A70154"} />
-				</lineSegments>
+				</lineSegments> */}
 
 			</mesh>
+			</Selection>
 			<object3D
 				ref={logoRef}
 				rotation={[frustum.angle, 0, 0]}

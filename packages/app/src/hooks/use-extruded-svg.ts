@@ -9,8 +9,8 @@ import {
 	Vector3,
 } from "three";
 import { SVGLoader } from "three-stdlib";
-import { getBoundingBoxVolume } from "../three/utils/bounding-box";
-import { getSvgBoundingBox, isNullish } from "../utils";
+import { getBoundingBoxVolume } from "@/three/utils/bounding-box";
+import { getSvgBoundingBox, isNullish } from "@/utils";
 import { useBoundingBox } from "./use-bounding-box";
 
 export interface Dimensions {

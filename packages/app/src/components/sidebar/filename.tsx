@@ -1,5 +1,5 @@
 import { TextInput } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
+import { useParametersContext } from "@/stores/parameters";
 
 export function FilenameInput() {
 	const filename = useParametersContext((state) => state.inputs.filename);

@@ -5,8 +5,8 @@ import {
 	toFull,
 	toMinimal,
 	URL_PARAM_KEY,
-} from "../share/urlShare";
-import { useParametersContext } from "../stores/parameters";
+} from "@/share/urlShare";
+import { useParametersContext } from "@/stores/parameters";
 
 export function useUrlStateSync() {
 	const inputs = useParametersContext((s) => s.inputs);

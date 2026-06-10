@@ -12,7 +12,7 @@ function Lights() {
                 position={[10, 50, computed.halfModelLength + 30]}
                 decay={0.3}
                 intensity={Math.PI * 1.2}
-                color="#FFDDF9"
+                color="#BDBDBD"
             />
             <pointLight
                 castShadow
@@ -26,7 +26,7 @@ function Lights() {
                 position={[50, 45, computed.halfModelLength + 25]}
                 decay={0.2}
                 intensity={Math.PI * 0.8}
-                color="#FFD6FA"
+                color="#BDBDBD"
             />
             <directionalLight
                 color="#ffffff"

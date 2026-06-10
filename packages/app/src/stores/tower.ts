@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ContributionDay } from "../api/types";
+import type { ContributionDay } from "@/api/types";
 
 interface TowerPosition {
 	x: number;

@@ -2,8 +2,8 @@ import { Select } from "@mantine/core";
 import {
 	getParametersStore,
 	useParametersContext,
-} from "../../stores/parameters";
-import { ExportFormat } from "../../three/utils/export";
+} from "@/stores/parameters";
+import { ExportFormat } from "@/three/utils/export";
 
 export function ExportFormatInput() {
 	const DEFAULT_VALUE =

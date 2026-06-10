@@ -6,17 +6,18 @@ import type {
 	ContributionDay,
 	ContributionWeek,
 	ContributionWeeks,
-} from "../../api/types";
-import { getFirstDayOffset } from "../../api/utils";
-import { useModelStore } from "../../stores/model";
+} from "@/api/types";
+import { getFirstDayOffset } from "@/api/utils";
+import { useModelStore } from "@/stores/model";
 import {
 	DEFAULT_INPUT_PARAMETERS,
 	useParametersContext,
-} from "../../stores/parameters";
+} from "@/stores/parameters";
 import { ContributionTower } from "./tower";
 import { SkylineBase } from "./base";
 import { GROUPS } from "../utils/constants";
-import { useContributionQueryStore } from "../../stores/query";
+import { useContributionQueryStore } from "@/stores/query";
+import { Select } from "@react-three/postprocessing";
 
 interface TowersRender {
 	towers: (JSX.Element | null)[];
@@ -157,22 +158,24 @@ export function SkylineModel({ group }: SkylineModelProps) {
 	return (
 		<group ref={group}>
 			<group name={GROUPS.TOWERS_EXPORT} />
-			{count > 0 && (
-				<group name={GROUPS.TOWERS_PARENT}>
-					<Instances
-						name={GROUPS.TOWERS}
-						key={`${inputs.name}-${computed.formattedYear}-${inputs.showContributionColor}`}
-						limit={count}
-						castShadow
-						receiveShadow
-					>
-						<boxGeometry />
-						<meshStandardMaterial roughness={0.5} metalness={0.2} />
-						{towers}
-					</Instances>
-				</group>
-			)}
-			<SkylineBase />
+			<Select enabled>
+				{count > 0 && (
+					<group name={GROUPS.TOWERS_PARENT}>
+						<Instances
+							name={GROUPS.TOWERS}
+							key={`${inputs.name}-${computed.formattedYear}-${inputs.showContributionColor}`}
+							limit={count}
+							castShadow
+							receiveShadow
+						>
+							<boxGeometry />
+							<meshStandardMaterial roughness={0.5} metalness={0.2} />
+							{towers}
+						</Instances>
+					</group>
+				)}
+				<SkylineBase />
+			</Select>
 		</group>
 	);
 }

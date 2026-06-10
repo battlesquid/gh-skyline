@@ -1,4 +1,4 @@
-import type { ContributionWeek } from "./types";
+import type { ContributionWeek } from "@/api/types";
 
 export const getFirstDayOffset = (
 	week: ContributionWeek,

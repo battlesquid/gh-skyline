@@ -1,5 +1,5 @@
 import { LoadingOverlay } from "@mantine/core";
-import { useContributionQueryStore } from "../stores/query";
+import { useContributionQueryStore } from "@/stores/query";
 
 function Loading() {
     const loading = useContributionQueryStore((state) => state.loading);

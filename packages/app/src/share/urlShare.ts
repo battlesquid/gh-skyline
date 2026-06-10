@@ -7,9 +7,9 @@ import { z } from "zod";
 import {
 	DEFAULT_INPUT_PARAMETERS,
 	type SkylineModelInputParameters,
-} from "../stores/parameters";
-import { ExportFormat } from "../three/utils/export";
-import { SkylineBaseShape } from "../stores/parameters";
+} from "@/stores/parameters";
+import { ExportFormat } from "@/three/utils/export";
+import { SkylineBaseShape } from "@/stores/parameters";
 
 export const URL_PARAM_KEY = "s";
 

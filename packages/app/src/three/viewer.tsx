@@ -1,18 +1,19 @@
+import { useContributionQuery } from "@/hooks/use-contribution-query";
+import { useParametersContext } from "@/stores/parameters";
 import { Grid } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Outline, Selection } from "@react-three/postprocessing";
+import { KernelSize } from "postprocessing";
 import { useMemo, useRef } from "react";
-import { type Group } from "three";
-import { useContributionQuery } from "../hooks/use-contribution-query";
-import { useParametersContext } from "../stores/parameters";
+import { Group } from "three";
 import CameraControls from "./camera-controls";
 import Lights from "./lights";
 import { SkylineModel } from "./model/skyline_model";
-
 function Viewer() {
 	const computed = useParametersContext((state) => state.computed);
-	const group = useRef<Group | null>(null);
+	const group = useRef<Group>(new Group());
 	const style = useMemo(() => ({ height: "100%" }), []);
-	
+
 	useContributionQuery();
 
 	return (
@@ -24,15 +25,26 @@ function Viewer() {
 		>
 			<CameraControls />
 			<Lights />
-			<SkylineModel group={group} />
+			<Selection>
+				<EffectComposer autoClear={false}>
+					<Outline
+						pulseSpeed={0.2}
+						edgeStrength={1.5}
+						visibleEdgeColor={0x02FFEA}
+						kernelSize={KernelSize.LARGE}
+						blur
+					/>
+				</EffectComposer>
+				<SkylineModel group={group} />
+			</Selection>
 			<Grid
 				name="grid"
 				position={[0, -computed.platformHeight, 0]}
-				cellSize={10}
-				cellColor={"#555555"}
-				sectionSize={40}
-				sectionColor={"#30454D"}
-				fadeDistance={5000}
+				cellSize={2}
+				cellColor={"#252525"}
+				sectionSize={10}
+				sectionColor={"#297999"}
+				fadeDistance={2000}
 				fadeStrength={10}
 				fadeFrom={1}
 				infiniteGrid={true}

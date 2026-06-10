@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ContributionWeeks } from "../api/types";
+import { ContributionWeeks } from "@/api/types";
 
 export interface ContributionQuery {
     loading: boolean;

@@ -1,13 +1,19 @@
 {
-	"extends": "../../tsconfig.base.json",
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.node.json"
+		}
+	],
 	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["DOM", "ES2022"],
-		"module": "ESNext",
-		"jsx": "react-jsx",
-		"noEmit": true,
-		"moduleResolution": "bundler",
-		"moduleDetection": "force",
+		"paths": {
+			"@/*": [
+				"./src/*"
+			]
+		},
 		"plugins": [
 			{
 				"name": "gql.tada/ts-plugin",
@@ -16,5 +22,4 @@
 			}
 		]
 	},
-	"include": ["./src"]
 }

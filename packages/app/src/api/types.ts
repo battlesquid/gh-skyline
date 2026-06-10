@@ -1,5 +1,5 @@
 import type { ResultOf } from "gql.tada";
-import type { ContributionQuery } from "./query";
+import type { ContributionQuery } from "@/api/query";
 
 export type ContributionWeeks = NonNullable<
 	ResultOf<typeof ContributionQuery>["user"]

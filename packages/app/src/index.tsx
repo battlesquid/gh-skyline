@@ -3,13 +3,13 @@ import "@mantine/core/styles.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "urql";
-import { client } from "./api/client";
-import { shadcnCssVariableResolver } from "./theme/css_variable_resolver";
-import { shadcnTheme } from "./theme/theme";
-import "./theme/style.css";
+import { client } from "@/api/client";
+import { shadcnCssVariableResolver } from "@/theme/css_variable_resolver";
+import { shadcnTheme } from "@/theme/theme";
+import "@/theme/style.css";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { PostHogProvider } from "posthog-js/react";
-import { routeTree } from "./routeTree.gen";
+import { routeTree } from "@/routeTree.gen";
 
 const router = createRouter({ routeTree });
 declare module "@tanstack/react-router" {

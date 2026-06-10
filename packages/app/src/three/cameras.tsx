@@ -11,7 +11,7 @@ import type {
 	OrthographicCamera as OrthographicCameraImpl,
 	PerspectiveCamera as PerspectiveCameraImpl,
 } from "three";
-import { useControlsStore } from "../stores/controls";
+import { useControlsStore } from "@/stores/controls";
 
 export function Cameras() {
 	const fov = 10;

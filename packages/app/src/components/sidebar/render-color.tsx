@@ -1,5 +1,5 @@
 import { Checkbox, ColorInput } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
+import { useParametersContext } from "@/stores/parameters";
 
 export function RenderColorInput() {
 	const color = useParametersContext((state) => state.inputs.color);

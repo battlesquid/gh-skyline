@@ -1,12 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useRef } from "react";
-import { fetchProfile, isAuthenticated } from "../api/auth";
-import { EditorAppShell } from "../components/appshell";
-import { getInitialInputsFromUrl } from "../share/urlShare";
-import { preloadDefaultFonts } from "../stores/fonts";
-import { createParametersStore, ParametersContext } from "../stores/parameters";
-import "../styles/editor.css";
-import "../styles/page.css";
+import { fetchProfile, isAuthenticated } from "@/api/auth";
+import { EditorAppShell } from "@/components/appshell";
+import { getInitialInputsFromUrl } from "@/share/urlShare";
+import { preloadDefaultFonts } from "@/stores/fonts";
+import { createParametersStore, ParametersContext } from "@/stores/parameters";
+import "@/styles/editor.css";
+import "@/styles/page.css";
 
 export const Route = createFileRoute("/")({
 	component: Editor,

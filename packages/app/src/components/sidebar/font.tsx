@@ -1,7 +1,7 @@
 import { Select } from "@mantine/core";
 import { useState } from "react";
-import { DEFAULT_FONT_SELECTION, useFontStore } from "../../stores/fonts";
-import { useParametersContext } from "../../stores/parameters";
+import { DEFAULT_FONT_SELECTION, useFontStore } from "@/stores/fonts";
+import { useParametersContext } from "@/stores/parameters";
 
 // TODO: re-implement font loading using ttf format
 

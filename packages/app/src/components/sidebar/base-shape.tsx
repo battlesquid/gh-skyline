@@ -2,9 +2,9 @@ import { Select } from "@mantine/core";
 import {
 	getParametersStore,
 	useParametersContext,
-} from "../../stores/parameters";
-import { SkylineBaseShape } from "../../stores/parameters";
-import { capitalize } from "../../utils";
+} from "@/stores/parameters";
+import { SkylineBaseShape } from "@/stores/parameters";
+import { capitalize } from "@/utils";
 
 export function BaseShapeInput() {
 	const DEFAULT_VALUE = getParametersStore().getInitialState().inputs.shape;

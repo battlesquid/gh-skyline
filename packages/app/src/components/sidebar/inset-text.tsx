@@ -1,5 +1,5 @@
 import { Checkbox } from "@mantine/core";
-import { useParametersContext } from "../../stores/parameters";
+import { useParametersContext } from "@/stores/parameters";
 
 export function InsetTextCheckbox() {
 	const insetText = useParametersContext((state) => state.inputs.insetText);
