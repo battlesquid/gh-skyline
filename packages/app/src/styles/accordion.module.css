@@ -1,3 +1,28 @@
+.root {
+	position: relative;
+}
+
+.item {
+	border: none;
+}
+
+/* Makes the header sticky */
+.control {
+	position: sticky;
+	top: 0;
+	/* Adjust this value if you have a sticky app header (e.g., 60px) */
+	background-color: var(--mantine-color-body);
+	/* Prevents overlapping text */
+	z-index: 10;
+	border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.control:hover {
+	background-color: var(--mantine-color-default-hover);
+}
+
+/* Gives breathing room to the content */
 .content {
 	padding: var(--mantine-spacing-md) var(--mantine-spacing-xs);
+	padding-bottom: 2rem;
 }

@@ -11,7 +11,7 @@ import {
 } from "../../manifold/frustum";
 import { useParametersContext } from "../../stores/parameters";
 import { SkylineBaseShape } from "../../stores/parameters";
-import { SkylineObjectNames } from "../utils/constants";
+import { GROUPS } from "../utils/constants";
 import { useContributionQueryStore } from "../../stores/query";
 
 
@@ -47,7 +47,7 @@ export function SkylineBase() {
 		},
 	});
 
-	const ttfFont = useTTFLoader(inputs.font);
+	const font = useTTFLoader(inputs.font);
 
 	const frustumProps: ManifoldFrustumArgs = useMemo(
 		() => ({
@@ -69,25 +69,25 @@ export function SkylineBase() {
 	const nameManifoldProps = useMemo(
 		(): ManifoldFrustumText => ({
 			points: toPolygons(
-				ttfFont,
+				font,
 				computed.resolvedName,
 				computed.platformHeight / 1.65,
 			),
 			offset: inputs.nameOffset,
 		}),
-		[ttfFont, computed.resolvedName, inputs.nameOffset],
+		[font, computed.resolvedName, inputs.nameOffset],
 	);
 
 	const yearManifoldProps = useMemo(
 		(): ManifoldFrustumText => ({
 			points: toPolygons(
-				ttfFont,
+				font,
 				computed.formattedYear,
 				computed.platformHeight / 1.65,
 			),
 			offset: inputs.yearOffset,
 		}),
-		[ttfFont, inputs.yearOffset, computed.formattedYear],
+		[font, inputs.yearOffset, computed.formattedYear],
 	);
 
 	const frustum = useMemo(
@@ -110,7 +110,7 @@ export function SkylineBase() {
 			: inputs.textDepth / 2;
 
 	return (
-		<group name={SkylineObjectNames.Base}>
+		<group name={GROUPS.BASE}>
 			<mesh
 				geometry={frustum.geometry}
 				position={[0, -computed.halfPlatformHeight, TEXT_EXTRUSION_OFFSET]}
@@ -118,21 +118,30 @@ export function SkylineBase() {
 				onPointerOver={(e) => e.stopPropagation()}
 				castShadow
 				receiveShadow
-			/>
+			>
+				<lineSegments
+					name="edges"
+					renderOrder={10}
+				>
+					<edgesGeometry args={[frustum.geometry, 90]} />
+					<lineBasicMaterial color={"#A70154"} />
+				</lineSegments>
+
+			</mesh>
 			<object3D
 				ref={logoRef}
 				rotation={[frustum.angle, 0, 0]}
 				position={[
 					-computed.halfModelLength -
-						inputs.padding +
-						inputs.logoOffset -
-						frustum.normal.x * (logo.threeBoundingBox.z / 2),
+					inputs.padding +
+					inputs.logoOffset -
+					frustum.normal.x * (logo.threeBoundingBox.z / 2),
 					-computed.halfPlatformHeight +
-						frustum.normal.y * (logo.threeBoundingBox.z / 2),
+					frustum.normal.y * (logo.threeBoundingBox.z / 2),
 					(computed.modelWidth * years.length) / 2 +
-						inputs.padding +
-						frustum.normal.z * (logo.threeBoundingBox.z / 2) +
-						frustumProps.lengthPadding / 4,
+					inputs.padding +
+					frustum.normal.z * (logo.threeBoundingBox.z / 2) +
+					frustumProps.lengthPadding / 4,
 				]}
 				castShadow
 				receiveShadow

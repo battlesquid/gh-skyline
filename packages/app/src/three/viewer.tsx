@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { type Group } from "three";
 import { useContributionQuery } from "../hooks/use-contribution-query";
 import { useParametersContext } from "../stores/parameters";
-import CameraControls from "./controls";
+import CameraControls from "./camera-controls";
 import Lights from "./lights";
 import { SkylineModel } from "./model/skyline_model";
 
@@ -20,6 +20,7 @@ function Viewer() {
 			id="viewer"
 			style={style}
 			shadows
+			camera={{ near: 0.1, far: 1000000 }}
 		>
 			<CameraControls />
 			<Lights />

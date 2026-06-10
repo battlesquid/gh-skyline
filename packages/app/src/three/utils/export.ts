@@ -3,7 +3,7 @@ import { Color, Group, Mesh, MeshStandardMaterial, type InstancedMesh } from "th
 import { exportTo3MF } from "three-3mf-exporter";
 import { STLExporter } from "three-stdlib";
 import { getThreeBoundingBox } from "./bounding-box";
-import { SkylineObjectNames } from "./constants";
+import { GROUPS } from "./constants";
 
 export enum ExportFormat {
 	Stl = "stl",
@@ -33,9 +33,9 @@ const EXPORT_MAP: Record<ExportFormat, Exporter> = {
 const prepareModel = (model: Group, scale: number) => {
 	const preparedModel = model.clone();
 	const exportGroup = preparedModel.getObjectByName(
-		SkylineObjectNames.TowersExportGroup,
+		GROUPS.TOWERS_EXPORT,
 	) as Group;
-	const instances = preparedModel.getObjectByName(SkylineObjectNames.Towers) as
+	const instances = preparedModel.getObjectByName(GROUPS.TOWERS) as
 		| InstancedMesh
 		| undefined;
 
@@ -48,7 +48,7 @@ const prepareModel = (model: Group, scale: number) => {
 		exportGroup.add(meshes);
 
 		const instancesGroup = preparedModel.getObjectByName(
-			SkylineObjectNames.TowersParent,
+			GROUPS.TOWERS_PARENT,
 		) as Group;
 		instancesGroup.removeFromParent();
 		instances.removeFromParent();

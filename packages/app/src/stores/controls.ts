@@ -3,9 +3,8 @@ import { create } from "zustand";
 export type ProjectionMode = "perspective" | "orthographic";
 
 export interface ControlsStore {
-	reset: true | null;
+	reset: string
 	resetView(): void;
-	clearReset(): void;
 
 	autoRotate: boolean;
 	toggleAutoRotate(): void;
@@ -15,9 +14,8 @@ export interface ControlsStore {
 }
 
 export const useControlsStore = create<ControlsStore>((set) => ({
-	reset: null,
-	resetView: () => set(() => ({ reset: true })),
-	clearReset: () => set(() => ({ reset: null })),
+	reset: "",
+	resetView: () => set(() => ({ reset: `${Math.random()}` })),
 	autoRotate: false,
 	toggleAutoRotate: () => set((state) => ({ autoRotate: !state.autoRotate })),
 	projectionMode: "perspective",

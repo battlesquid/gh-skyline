@@ -104,7 +104,7 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	nameOverride: "",
 	startYear: new Date().getFullYear(),
 	endYear: new Date().getFullYear(),
-	color: "#787878",
+	color: "#7A7474",
 	font: DEFAULT_FONT,
 	insetText: false,
 	showContributionColor: false,

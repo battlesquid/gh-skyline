@@ -6,32 +6,38 @@ function Lights() {
     const computed = useParametersContext((state) => state.computed);
     return (
         <group name="lights">
-            <ambientLight intensity={Math.PI / 2} />
-            <spotLight
+            <ambientLight intensity={0.4} />
+            <pointLight
                 castShadow
-                position={[0, 20, 200]}
-                angle={0.5}
-                penumbra={0.1}
-                decay={0.4}
-                intensity={Math.PI}
-                color="#6f6f6f"
+                position={[10, 50, computed.halfModelLength + 30]}
+                decay={0.3}
+                intensity={Math.PI * 1.2}
+                color="#FFDDF9"
             />
             <pointLight
                 castShadow
-                position={[0, 40, computed.halfModelLength + 25]}
-                decay={0}
-                intensity={Math.PI}
-                color="#c7c7c7"
+                position={[-computed.modelWidth, 35, -(computed.halfModelLength)]}
+                decay={0.3}
+                intensity={Math.PI * 0.6}
+                color="#cce0ff"
+            />
+            <pointLight
+                castShadow
+                position={[50, 45, computed.halfModelLength + 25]}
+                decay={0.2}
+                intensity={Math.PI * 0.8}
+                color="#FFD6FA"
             />
             <directionalLight
-                color="#a8a8a8"
-                intensity={Math.PI}
-                position={[0, 10, 0]}
+                color="#ffffff"
+                intensity={1.8}
+                position={[5, 15, 10]}
+                castShadow
             />
             <Suspense>
                 <Environment
                     files="/three/wildflower_field_4k.jpg"
-                    environmentIntensity={0.6}
+                    environmentIntensity={0.8}
                 />
             </Suspense>
             <SoftShadows size={80} samples={10} />

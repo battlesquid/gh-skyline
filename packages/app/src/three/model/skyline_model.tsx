@@ -15,7 +15,7 @@ import {
 } from "../../stores/parameters";
 import { ContributionTower } from "./tower";
 import { SkylineBase } from "./base";
-import { SkylineObjectNames } from "../utils/constants";
+import { GROUPS } from "../utils/constants";
 import { useContributionQueryStore } from "../../stores/query";
 
 interface TowersRender {
@@ -156,11 +156,11 @@ export function SkylineModel({ group }: SkylineModelProps) {
 
 	return (
 		<group ref={group}>
-			<group name={SkylineObjectNames.TowersExportGroup} />
+			<group name={GROUPS.TOWERS_EXPORT} />
 			{count > 0 && (
-				<group name={SkylineObjectNames.TowersParent}>
+				<group name={GROUPS.TOWERS_PARENT}>
 					<Instances
-						name={SkylineObjectNames.Towers}
+						name={GROUPS.TOWERS}
 						key={`${inputs.name}-${computed.formattedYear}-${inputs.showContributionColor}`}
 						limit={count}
 						castShadow

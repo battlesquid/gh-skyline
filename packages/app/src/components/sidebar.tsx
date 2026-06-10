@@ -7,6 +7,7 @@ import {
 	ScrollArea,
 	Stack,
 	Title,
+	Typography,
 } from "@mantine/core";
 import {
 	IconBrandGithubFilled,
@@ -65,13 +66,15 @@ export function Sidebar(props: SidebarProps) {
 					<Stack gap={10}>
 						<GenerateSection ok={ok} login={profile?.login ?? ""} />
 						<Divider />
-						<Title className="mona-sans-wide" tt="uppercase" order={5}>
+						{/* <Title className="mona-sans-wide" tt="uppercase" order={5}>
 							Settings
-						</Title>
+						</Title> */}
 						<Accordion classNames={accordionClasses}>
 							<Accordion.Item value="text_options">
 								<Accordion.Control icon={<IconTextSize stroke={1} size={20} />}>
-									Text
+									<Title className="mona-sans-wide" tt="uppercase" order={6}>
+										Text
+									</Title>
 								</Accordion.Control>
 								<Accordion.Panel>
 									<Stack>
@@ -83,7 +86,9 @@ export function Sidebar(props: SidebarProps) {
 							</Accordion.Item>
 							<Accordion.Item value="model_options">
 								<Accordion.Control icon={<IconCube stroke={1} size={20} />}>
-									Model
+									<Title className="mona-sans-wide" tt="uppercase" order={6}>
+										Model
+									</Title>
 								</Accordion.Control>
 								<Accordion.Panel>
 									<Stack>
@@ -95,7 +100,9 @@ export function Sidebar(props: SidebarProps) {
 							</Accordion.Item>
 							<Accordion.Item value="display_options">
 								<Accordion.Control icon={<IconPaint stroke={1} size={20} />}>
-									Render
+									<Title className="mona-sans-wide" tt="uppercase" order={6}>
+										Render
+									</Title>
 								</Accordion.Control>
 								<Accordion.Panel>
 									<Stack gap={10}>
@@ -105,7 +112,9 @@ export function Sidebar(props: SidebarProps) {
 							</Accordion.Item>
 							<Accordion.Item value="export_options">
 								<Accordion.Control icon={<IconDownload stroke={1} size={20} />}>
-									Export
+									<Title className="mona-sans-wide" tt="uppercase" order={6}>
+										Export
+									</Title>
 								</Accordion.Control>
 								<Accordion.Panel>
 									<Stack gap={10}>
