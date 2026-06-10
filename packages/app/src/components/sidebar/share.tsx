@@ -12,12 +12,15 @@ import { IconCheck, IconCopy, IconShare2 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { buildShareLinks } from "../../share/urlShare";
 import { useParametersContext } from "../../stores/parameters";
+import { useUrlStateSync } from "../../hooks/use-url-state";
 
 export function ShareButton() {
 	const [opened, setOpened] = useState(false);
 	const inputs = useParametersContext((s) => s.inputs);
 	const [minimal, setMinimal] = useState<string>("");
 	const [full, setFull] = useState<string>("");
+
+	useUrlStateSync();
 
 	useEffect(() => {
 		if (!opened) return;

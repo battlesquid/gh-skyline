@@ -4,17 +4,14 @@ import type { OperationResult } from "urql";
 import { client } from "../api/client";
 import { ContributionQuery } from "../api/query";
 import type { ContributionWeeks } from "../api/types";
+import { useContributionQueryStore } from "../stores/query";
+import { useShallow } from "zustand/shallow";
+import { useParametersContext } from "../stores/parameters";
 
 interface ExtendedQueryProps {
 	name?: string;
 	start: number;
 	end: number;
-}
-
-export interface ExtendedQueryResult {
-	years: ContributionWeeks[];
-	fetching: boolean;
-	ok: boolean;
 }
 
 const doRangeQuery = async (props: ExtendedQueryProps) => {
@@ -30,7 +27,7 @@ const doRangeQuery = async (props: ExtendedQueryProps) => {
 			.query(ContributionQuery, {
 				name,
 				start: `${i}-01-01T00:00:00Z`,
-				end: `${i}-12-31T00:00:00Z`,
+				end: `${i}-12-31T00:00:00Z`, // TODO: push to end of day, make sure it's still ok
 			})
 			.toPromise();
 		queries.push(promise);
@@ -53,29 +50,32 @@ const doRangeQuery = async (props: ExtendedQueryProps) => {
 	}
 };
 
-export const useExtendedQuery = (
-	props: ExtendedQueryProps,
-): ExtendedQueryResult => {
-	const [years, setYears] = useState<ContributionWeeks[]>([[]]);
-	const [fetching, setFetching] = useState(false);
-	const [ok, setOk] = useState(true);
+export const useContributionQuery = (
+) => {
+	const { name, start, end } = useParametersContext(useShallow((state) => ({
+		name: state.inputs.name,
+		start: state.inputs.startYear,
+		end: state.inputs.endYear
+	})));
+	const setLoading = useContributionQueryStore((state) => state.setLoading);
+	const setOk = useContributionQueryStore((state) => state.setOk);
+	const setResults = useContributionQueryStore((state) => state.setResults);
 	useEffect(() => {
-		if (props.name === undefined) {
+		if (name === undefined) {
 			return;
 		}
 
-		setFetching(true);
+		setLoading(true);
 		setOk(true);
-		setYears([[]]);
-		doRangeQuery(props)
+		setResults([[]]);
+		doRangeQuery({ name, start, end })
 			.then((result) => {
-				setYears(result);
+				setResults(result);
 				if (result.length === 0) {
 					setOk(false);
 				}
 			})
 			.catch(console.error)
-			.finally(() => setFetching(false));
-	}, [props.name, props.start, props.end]);
-	return { years, fetching, ok };
+			.finally(() => setLoading(false));
+	}, [name, start, end]);
 };

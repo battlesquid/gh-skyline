@@ -1,24 +1,24 @@
 import { useMemo, useRef } from "react";
 import { type Group, MeshStandardMaterial } from "three";
 import { useShallow } from "zustand/shallow";
-import { useExtrudedSvg } from "../hooks/useExtrudedSvg";
-import { toPolygons, useTTFLoader } from "../hooks/useTTFLoader";
-import { LOGOS } from "../logos";
+import { useExtrudedSvg } from "../../hooks/use-extruded-svg";
+import { toPolygons, useTTFLoader } from "../../hooks/use-ttf-loader";
+import { LOGOS } from "../../logos";
 import {
 	type ManifoldFrustumArgs,
 	type ManifoldFrustumText,
 	makeThreeFrustum,
-} from "../manifold/frustum";
-import { useParametersContext } from "../stores/parameters";
-import type { SkylineProps } from "./skyline";
-import { SkylineBaseShape } from "./types";
-import { SkylineObjectNames } from "./utils";
+} from "../../manifold/frustum";
+import { useParametersContext } from "../../stores/parameters";
+import { SkylineBaseShape } from "../../stores/parameters";
+import { SkylineObjectNames } from "../utils/constants";
+import { useContributionQueryStore } from "../../stores/query";
 
-export interface SkylineBaseProps extends SkylineProps {}
 
-export function SkylineBase({ years }: SkylineBaseProps) {
+export function SkylineBase() {
 	const inputs = useParametersContext(useShallow((state) => state.inputs));
 	const computed = useParametersContext(useShallow((state) => state.computed));
+	const years = useContributionQueryStore((state) => state.results);
 
 	// TODO: dont memoize this, maybe make a hook to just update props
 	const material = useMemo(

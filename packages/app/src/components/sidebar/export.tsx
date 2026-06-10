@@ -2,7 +2,7 @@ import { Button, Text } from "@mantine/core";
 import { Suspense } from "react";
 import { useModelStore } from "../../stores/model";
 import { useParametersContext } from "../../stores/parameters";
-import { useExportedModel } from "../../three/export";
+import { useExportedModel } from "../../three/utils/export";
 
 export function ExportButton() {
 	const filename = useParametersContext(

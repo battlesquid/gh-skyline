@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import type { Group, InstancedMesh } from "three";
+import { Color, Group, Mesh, MeshStandardMaterial, type InstancedMesh } from "three";
 import { exportTo3MF } from "three-3mf-exporter";
 import { STLExporter } from "three-stdlib";
-import { getThreeBoundingBox } from "../hooks/useBoundingBox";
-import { createMeshesFromInstancedMesh, SkylineObjectNames } from "./utils";
+import { getThreeBoundingBox } from "./bounding-box";
+import { SkylineObjectNames } from "./constants";
 
 export enum ExportFormat {
 	Stl = "stl",
@@ -110,3 +110,44 @@ export function useExportedModel(
 	}, [model, scale, format]);
 	return { downloadUrl, exporting, size };
 }
+
+/**
+ * Adapted from the original SceneUtils.createMeshesFromInstancedMesh
+ *
+ */
+
+export const createMeshesFromInstancedMesh = (instancedMesh: InstancedMesh) => {
+	const group = new Group();
+
+	const count = instancedMesh.count;
+	const geometry = instancedMesh.geometry;
+	const instancedMaterial = instancedMesh.material as MeshStandardMaterial;
+	const materialColorMap = new Map<string, MeshStandardMaterial>();
+	const instancedColor = new Color();
+
+	for (let i = 0; i < count; i++) {
+		instancedMesh.getColorAt(i, instancedColor);
+		const hexColor = instancedColor.getHexString();
+		const currentMaterial = materialColorMap.get(hexColor);
+
+		let mesh: Mesh;
+		if (currentMaterial !== undefined) {
+			mesh = new Mesh(geometry, currentMaterial);
+		} else {
+			const mat = new MeshStandardMaterial().copy(instancedMaterial);
+			mat.color.set(instancedColor);
+			materialColorMap.set(hexColor, mat);
+			mesh = new Mesh(geometry, mat);
+		}
+
+		instancedMesh.getMatrixAt(i, mesh.matrix);
+		mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+		group.add(mesh);
+	}
+
+	group.copy(instancedMesh);
+	group.updateMatrixWorld(); // ensure correct world matrices of meshes
+
+	return group;
+};
+

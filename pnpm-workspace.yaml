@@ -1,8 +1,12 @@
 packages:
   - packages/*
+
 allowBuilds:
   core-js: true
   esbuild: true
   sharp: true
   workerd: true
 
+onlyBuiltDependencies:
+  - core-js
+  - esbuild

@@ -1,45 +1,39 @@
 import { darken } from "@mantine/core";
-import { Instances, useBounds } from "@react-three/drei";
-import { type MutableRefObject, useEffect, useState } from "react";
+import { Instances } from "@react-three/drei";
+import { JSX, RefObject, useEffect } from "react";
 import { Color, type Group as ThreeGroup } from "three";
 import type {
 	ContributionDay,
 	ContributionWeek,
 	ContributionWeeks,
-} from "../api/types";
-import { getFirstDayOffset } from "../api/utils";
-import { useControlsStore } from "../stores/controls";
-import { useModelStore } from "../stores/model";
+} from "../../api/types";
+import { getFirstDayOffset } from "../../api/utils";
+import { useModelStore } from "../../stores/model";
 import {
 	DEFAULT_INPUT_PARAMETERS,
 	useParametersContext,
-} from "../stores/parameters";
-import { ContributionTower } from "./contribution_tower";
-import type { SkylineProps } from "./skyline";
-import { SkylineBase } from "./skyline_base";
-import { SkylineObjectNames } from "./utils";
+} from "../../stores/parameters";
+import { ContributionTower } from "./tower";
+import { SkylineBase } from "./base";
+import { SkylineObjectNames } from "../utils/constants";
+import { useContributionQueryStore } from "../../stores/query";
 
 interface TowersRender {
 	towers: (JSX.Element | null)[];
 	count: number;
 }
 
-export interface SkylineModelProps extends SkylineProps {
-	group: MutableRefObject<ThreeGroup | null>;
+export interface SkylineModelProps {
+	group: RefObject<ThreeGroup | null>;
 }
 
-export function SkylineModel({ group, years }: SkylineModelProps) {
-	const [initialized, setInitialized] = useState(false);
+export function SkylineModel({ group }: SkylineModelProps) {
 	const computed = useParametersContext((state) => state.computed);
 	const inputs = useParametersContext((state) => state.inputs);
 
-	const setDirty = useModelStore((state) => state.setDirty);
 	const setModel = useModelStore((state) => state.setModel);
+	const years = useContributionQueryStore((state) => state.results);
 
-	const reset = useControlsStore((state) => state.reset);
-	const clearReset = useControlsStore((state) => state.clearReset);
-
-	const bounds = useBounds();
 	let boundsTimeout: number | undefined;
 	const clearBoundsTimeout = () => {
 		if (boundsTimeout !== undefined) {
@@ -49,16 +43,9 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 
 	useEffect(() => {
 		clearTimeout(boundsTimeout);
-		setDirty(true);
 		boundsTimeout = setTimeout(() => {
 			if (group.current === null) {
 				return;
-			}
-			setDirty(false);
-			if (initialized) {
-				bounds.refresh().clip().fit();
-			} else {
-				setInitialized(true);
 			}
 			setModel(group.current.clone());
 		}, 1000);
@@ -76,14 +63,6 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		inputs.insetText,
 		inputs.showContributionColor,
 	]);
-
-	useEffect(() => {
-		if (reset === null) {
-			return;
-		}
-		bounds.refresh().clip().fit().reset();
-		clearReset();
-	}, [reset]);
 
 	const renderDay = (
 		day: ContributionDay,
@@ -193,7 +172,7 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 					</Instances>
 				</group>
 			)}
-			<SkylineBase years={years} />
+			<SkylineBase />
 		</group>
 	);
 }

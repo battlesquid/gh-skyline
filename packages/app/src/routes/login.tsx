@@ -14,12 +14,13 @@ import {
 	animate,
 	createScope,
 	createTimeline,
+	cubicBezier,
 	type Scope,
 	stagger,
 } from "animejs";
 import { useEffect, useRef } from "react";
 import { isAuthenticated, resolveToken } from "../api/auth";
-import ContributionBackground from "../components/contribution_background";
+import ContributionBackground from "../components/contribution-background";
 import { MQ } from "../theme/media";
 import "../styles/login.css";
 import "../styles/page.css";
@@ -112,7 +113,7 @@ function Login() {
 				createTimeline()
 					.sync(slideinfade)
 					.add(".slide-up", {
-						ease: "cubicBezier(.28,1,0,1)",
+						ease: cubicBezier(.28,1,0,1),
 						y: stagger("-1.5rem"),
 						delay: stagger(10),
 						marginTop: "4.5rem",
@@ -121,7 +122,7 @@ function Login() {
 				createTimeline()
 					.sync(slideinfade)
 					.add(".slide-down", {
-						ease: "cubicBezier(.28,1,0,1)",
+						ease: cubicBezier(.28,1,0,1),
 						y: stagger("1.5rem"),
 						delay: stagger(10, { reversed: true }),
 						marginBottom: "4.5rem",

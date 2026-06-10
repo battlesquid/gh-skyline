@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useTTFLoader } from "../hooks/useTTFLoader";
+import { useTTFLoader } from "../hooks/use-ttf-loader";
 
 const FONT_KEY = "fonts";
 

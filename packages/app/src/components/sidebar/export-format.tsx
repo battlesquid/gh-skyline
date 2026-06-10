@@ -3,7 +3,7 @@ import {
 	getParametersStore,
 	useParametersContext,
 } from "../../stores/parameters";
-import { ExportFormat } from "../../three/export";
+import { ExportFormat } from "../../three/utils/export";
 
 export function ExportFormatInput() {
 	const DEFAULT_VALUE =

@@ -3,7 +3,7 @@ import {
 	getParametersStore,
 	useParametersContext,
 } from "../../stores/parameters";
-import { SkylineBaseShape } from "../../three/types";
+import { SkylineBaseShape } from "../../stores/parameters";
 import { capitalize } from "../../utils";
 
 export function BaseShapeInput() {

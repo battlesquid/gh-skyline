@@ -1,20 +1,39 @@
-import { OrbitControls } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
 import { useControlsStore } from "../stores/controls";
+import { CameraControls as DreiCameraControls } from "@react-three/drei";
+import { useEffect, useRef } from "react";
+import { useModelStore } from "../stores/model";
 
-export function CameraControls() {
-	const camera = useThree((state) => state.camera);
-	const gl = useThree((state) => state.gl);
-	const autoRotate = useControlsStore((state) => state.autoRotate);
+const cameraPadding = (padding: number) => ({
+	paddingTop: padding,
+	paddingBottom: padding,
+	paddingLeft: padding,
+	paddingRight: padding,
+});
+
+function CameraControls() {
+	const controls = useRef<DreiCameraControls | null>(null);
+	const reset = useControlsStore((state) => state.reset);
+	const model = useModelStore((state) => state.model)
+	useEffect(() => {
+		if (controls.current === null) {
+			return;
+		}
+
+		controls.current.normalizeRotations();
+		controls.current.setLookAt(120, 0, 200, 0, 0, 0, true);
+		if (model !== null) {
+			controls.current.fitToBox(model, true, { ...cameraPadding(20) });
+		}
+	}, [reset, model]);
 
 	return (
-		<OrbitControls
-			args={[camera, gl.domElement]}
-			autoRotate={autoRotate}
-			autoRotateSpeed={0.8}
-			makeDefault
-			minPolarAngle={0}
-			maxPolarAngle={Math.PI}
-		/>
+		<group name="camera-controls">
+			<DreiCameraControls
+				makeDefault
+				ref={controls}
+			/>
+		</group>
 	);
 }
+
+export default CameraControls;

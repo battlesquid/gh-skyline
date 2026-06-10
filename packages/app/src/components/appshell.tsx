@@ -1,38 +1,25 @@
-import { AppShell, Drawer, LoadingOverlay, Text } from "@mantine/core";
+import { AppShell, Drawer, Text } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import type { UserProfile } from "../api/auth";
-import { useExtendedQuery } from "../hooks/useExtendedQuery";
-import { useUrlStateSync } from "../hooks/useUrlState";
-import { useParametersContext } from "../stores/parameters";
+import { useUrlStateSync } from "../hooks/use-url-state";
 import { MQ } from "../theme/media";
-import { Skyline } from "../three/skyline";
-import { HoverCard } from "./hover_card";
+import Viewer from "../three/viewer";
+import { HoverCard } from "./hover-card";
+import Loading from "./loading";
 import { Sidebar } from "./sidebar";
-import { SkylineControls } from "./skyline_controls";
+import { SkylineControls } from "./app-controls";
 
 export interface EditorAppShellProps {
 	profile: UserProfile | null;
 }
 
 export function EditorAppShell({ profile }: EditorAppShellProps) {
-	const name = useParametersContext((state) => state.inputs.name);
-	const start = useParametersContext((state) => state.inputs.startYear);
-	const end = useParametersContext((state) => state.inputs.endYear);
-
 	const [mobileOpened] = useDisclosure();
 	const [desktopOpened] = useDisclosure(true);
 	const [drawerOpened, { open: openDrawer, close: closeDrawer }] =
 		useDisclosure(false);
 
 	const isMobile = useMediaQuery(MQ.sm);
-
-	const { years, fetching, ok } = useExtendedQuery({
-		name,
-		start,
-		end,
-	});
-
-	useUrlStateSync();
 
 	return (
 		<AppShell
@@ -46,15 +33,11 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 			withBorder={false}
 		>
 			<AppShell.Navbar p="md" pr={0}>
-				<Sidebar profile={profile} ok={ok} />
+				<Sidebar profile={profile}  />
 			</AppShell.Navbar>
 			<AppShell.Main style={{ height: "100vh" }}>
-				<LoadingOverlay
-					visible={fetching}
-					zIndex={1000}
-					overlayProps={{ radius: "sm", blur: 2 }}
-				/>
-				<Skyline years={years} />
+				<Loading />
+				<Viewer />
 				<div
 					style={{
 						position: "absolute",
@@ -85,7 +68,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 							</Text>
 						}
 					>
-						<Sidebar fromDrawer profile={profile} ok={ok} />
+						<Sidebar fromDrawer profile={profile} />
 					</Drawer>
 				)}
 			</AppShell.Main>

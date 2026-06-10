@@ -2,10 +2,14 @@ import { createContext, useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { DAYS_IN_WEEK, WEEKS_IN_YEAR } from "../api/constants";
 import { formatYearText } from "../api/utils";
-import { ExportFormat } from "../three/export";
-import { SkylineBaseShape } from "../three/types";
+import { ExportFormat } from "../three/utils/export";
 import { safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
+
+export enum SkylineBaseShape {
+	Prism = "prism",
+	Frustum = "frustum"
+}
 
 export interface SkylineModelInputParameters {
 	name: string;

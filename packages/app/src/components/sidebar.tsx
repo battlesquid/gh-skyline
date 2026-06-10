@@ -18,28 +18,30 @@ import {
 import type { UserProfile } from "../api/auth";
 import accordionClasses from "../styles/accordion.module.css";
 import { Profile } from "./profile";
-import { BasePaddingInput } from "./sidebar_inputs/base_padding";
-import { BaseShapeInput } from "./sidebar_inputs/base_shape";
-import { ExportButton } from "./sidebar_inputs/export";
-import { ExportFormatInput } from "./sidebar_inputs/export_format";
-import { FilenameInput } from "./sidebar_inputs/filename";
-import { FontInput } from "./sidebar_inputs/font_input";
-import { GenerateSection } from "./sidebar_inputs/generate_section";
-import { InsetTextCheckbox } from "./sidebar_inputs/inset_text";
-import { RenderColorInput } from "./sidebar_inputs/render_color";
-import { ScaleInput } from "./sidebar_inputs/scale";
-import { ShareButton } from "./sidebar_inputs/share";
-import { TowerDampeningInput } from "./sidebar_inputs/tower_dampening";
-import { UsernameOverrideInput } from "./sidebar_inputs/username_override";
+import { BasePaddingInput } from "./sidebar/base-padding";
+import { BaseShapeInput } from "./sidebar/base-shape";
+import { ExportButton } from "./sidebar/export";
+import { ExportFormatInput } from "./sidebar/export-format";
+import { FilenameInput } from "./sidebar/filename";
+import { FontInput } from "./sidebar/font";
+import { GenerateSection } from "./sidebar/generate_section";
+import { InsetTextCheckbox } from "./sidebar/inset-text";
+import { RenderColorInput } from "./sidebar/render-color";
+import { ScaleInput } from "./sidebar/scale";
+import { ShareButton } from "./sidebar/share";
+import { TowerDampeningInput } from "./sidebar/tower-dampening";
+import { UsernameOverrideInput } from "./sidebar/username-override";
+import { useContributionQueryStore } from "../stores/query";
 
 interface SidebarProps {
 	fromDrawer?: boolean;
 	profile: UserProfile | null;
-	ok: boolean;
 }
 
 export function Sidebar(props: SidebarProps) {
-	const { fromDrawer, profile, ok } = props;
+	const { fromDrawer, profile } = props;
+
+	const ok = useContributionQueryStore((state) => state.ok);
 
 	return (
 		<Stack h={"100%"} gap={10}>

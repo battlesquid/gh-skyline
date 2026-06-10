@@ -31,7 +31,7 @@ export function SkylineControls({
 	const isMobile = useMediaQuery(MQ.sm);
 
 	return (
-		<Portal target="#skyline-canvas">
+		<Portal target="#viewer">
 			<Card className={classes.dock} p={5} withBorder>
 				<Group gap={5}>
 					{isMobile && onOpenDrawer && (

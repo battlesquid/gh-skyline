@@ -1,19 +1,17 @@
 import {
 	type DependencyList,
-	type MutableRefObject,
+	RefObject,
 	useEffect,
-	useState,
+	useState
 } from "react";
-import { Box3, Mesh, type Object3D, Vector3 } from "three";
+import { Mesh, type Object3D, Vector3 } from "three";
 import { isNullish } from "../utils";
+import { getThreeBoundingBox } from "../three/utils/bounding-box";
 
 export interface BoundingBoxProps {
-	obj: MutableRefObject<Object3D | null> | undefined;
+	obj: RefObject<Object3D | null> | undefined;
 	setter?: (size: Vector3) => void;
 }
-
-export const getThreeBoundingBox = (obj: Object3D) =>
-	new Box3().setFromObject(obj, true).getSize(new Vector3());
 
 export const useBoundingBox = (
 	props: BoundingBoxProps,

@@ -8,8 +8,8 @@ import {
 	DEFAULT_INPUT_PARAMETERS,
 	type SkylineModelInputParameters,
 } from "../stores/parameters";
-import { ExportFormat } from "../three/export";
-import { SkylineBaseShape } from "../three/types";
+import { ExportFormat } from "../three/utils/export";
+import { SkylineBaseShape } from "../stores/parameters";
 
 export const URL_PARAM_KEY = "s";
 

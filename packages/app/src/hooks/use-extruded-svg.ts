@@ -9,9 +9,14 @@ import {
 	Vector3,
 } from "three";
 import { SVGLoader } from "three-stdlib";
-import { type Dimensions, getBoundingBoxVolume } from "../three/utils";
+import { getBoundingBoxVolume } from "../three/utils/bounding-box";
 import { getSvgBoundingBox, isNullish } from "../utils";
-import { useBoundingBox } from "./useBoundingBox";
+import { useBoundingBox } from "./use-bounding-box";
+
+export interface Dimensions {
+	width: number;
+	height: number;
+}
 
 export interface UseExtrudedSvgOptions {
 	svg: string | undefined;

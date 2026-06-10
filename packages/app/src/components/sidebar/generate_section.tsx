@@ -5,7 +5,7 @@ import {
 	getParametersStore,
 	useParametersContext,
 } from "../../stores/parameters";
-import { GitHubUsernameInput } from "./github_username_input";
+import { GitHubUsernameInput } from "./github-username";
 
 export interface GenerateSectionProps {
 	ok: boolean;
