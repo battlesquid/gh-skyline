@@ -1,49 +1,47 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import {
-	encodeShareState,
-	getInitialInputsFromUrl,
-	toFull,
-	toMinimal,
-	URL_PARAM_KEY,
+	buildShareLinks,
+	encodeRestIfNeeded,
+	formatYearsPath,
 } from "@/share/urlShare";
 import { useParametersContext } from "@/stores/parameters";
 
+/**
+ * Keeps the URL in sync with the parameters store:
+ * name/years drive the path, the rest is encoded into `?s=` (omitted at defaults).
+ * Must be called from within the `/$name/$years` route subtree.
+ */
 export function useUrlStateSync() {
+	const navigate = useNavigate();
+	const params = useParams({ from: "/$name/$years" });
 	const inputs = useParametersContext((s) => s.inputs);
-	const setInputs = useParametersContext((s) => s.setInputs);
+
+	// Seed from the mounted URL so the first effect run (which matches the URL the
+	// store was seeded from) is a no-op and never triggers a redundant navigation.
+	const prevSRef = useRef<string | null>(encodeRestIfNeeded(inputs));
 
 	useEffect(() => {
-		const initial = getInitialInputsFromUrl(window.location.href);
-		if (Object.keys(initial).length) {
-			setInputs(initial);
+		const years = formatYearsPath(inputs.startYear, inputs.endYear);
+		const nextS = encodeRestIfNeeded(inputs);
+		if (
+			inputs.name === params.name &&
+			years === params.years &&
+			nextS === prevSRef.current
+		) {
+			return;
 		}
-	}, []);
-
-	const prevEncodedRef = useRef<string | null>(null);
-	useEffect(() => {
-		const full = toFull(inputs);
-		const encoded = encodeShareState(full);
-		if (prevEncodedRef.current === encoded) return;
-		prevEncodedRef.current = encoded;
-		const url = new URL(window.location.href);
-		url.searchParams.set(URL_PARAM_KEY, encoded);
-		window.history.replaceState({}, "", url);
-	}, [inputs]);
+		prevSRef.current = nextS;
+		navigate({
+			to: "/$name/$years",
+			params: { name: inputs.name, years },
+			search: nextS ? { s: nextS } : {},
+			replace: true,
+		});
+	}, [inputs, params.name, params.years, navigate]);
 
 	return {
-		getMinimalLink: () => {
-			const minimal = toMinimal(inputs);
-			const encoded = encodeShareState(minimal);
-			const url = new URL(window.location.href);
-			url.searchParams.set(URL_PARAM_KEY, encoded);
-			return url.toString();
-		},
-		getFullLink: () => {
-			const full = toFull(inputs);
-			const encoded = encodeShareState(full);
-			const url = new URL(window.location.href);
-			url.searchParams.set(URL_PARAM_KEY, encoded);
-			return url.toString();
-		},
+		getMinimalLink: () => buildShareLinks(inputs).minimal,
+		getFullLink: () => buildShareLinks(inputs).full,
 	};
 }

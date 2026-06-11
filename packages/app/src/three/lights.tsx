@@ -1,5 +1,4 @@
 import { Environment, SoftShadows } from "@react-three/drei";
-import { Suspense } from "react";
 import { useParametersContext } from "../stores/parameters";
 
 function Lights() {

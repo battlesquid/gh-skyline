@@ -161,7 +161,7 @@ export function SkylineModel({ group }: SkylineModelProps) {
 	return (
 		<group ref={group}>
 			<group name={GROUPS.TOWERS_EXPORT} />
-			<Select enabled>
+			{/* <Select enabled> */}
 				{count > 0 && (
 					<group name={GROUPS.TOWERS_PARENT}>
 						<Instances
@@ -178,7 +178,7 @@ export function SkylineModel({ group }: SkylineModelProps) {
 					</group>
 				)}
 				<SkylineBase />
-			</Select>
+			{/* </Select> */}
 		</group>
 	);
 }

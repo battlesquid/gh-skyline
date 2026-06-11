@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { fetchProfile, isAuthenticated } from "@/api/auth";
 
-export const Route = createFileRoute("/")({
-	beforeLoad: async ({ location }) => {
-		const profile = await fetchProfile();
-		if (!isAuthenticated() || !profile) {
+export const Route = createFileRoute("/$name/")({
+	beforeLoad: async ({ params, location }) => {
+		await fetchProfile();
+		if (!isAuthenticated()) {
 			throw redirect({
 				to: "/login",
 				reloadDocument: true,
@@ -13,11 +13,10 @@ export const Route = createFileRoute("/")({
 				},
 			});
 		}
-		// Canonicalize to the readable path scheme: /{login}/{currentYear}.
 		throw redirect({
 			to: "/$name/$years",
 			params: {
-				name: profile.login,
+				name: params.name,
 				years: `${new Date().getFullYear()}`,
 			},
 			replace: true,

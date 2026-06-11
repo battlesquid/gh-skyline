@@ -12,15 +12,12 @@ import { IconCheck, IconCopy, IconShare2 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { buildShareLinks } from "../../share/urlShare";
 import { useParametersContext } from "../../stores/parameters";
-import { useUrlStateSync } from "../../hooks/use-url-state";
 
 export function ShareButton() {
 	const [opened, setOpened] = useState(false);
 	const inputs = useParametersContext((s) => s.inputs);
 	const [minimal, setMinimal] = useState<string>("");
 	const [full, setFull] = useState<string>("");
-
-	useUrlStateSync();
 
 	useEffect(() => {
 		if (!opened) return;
@@ -49,7 +46,7 @@ export function ShareButton() {
 					</Text>
 					<Group gap="xs" wrap="nowrap">
 						<Text size="xs" style={{ flex: 1 }}>
-							Username + Year Range
+							Link
 						</Text>
 						<CopyButton value={minimal} timeout={2000}>
 							{({ copied, copy }) => (
@@ -67,7 +64,7 @@ export function ShareButton() {
 					</Group>
 					<Group gap="xs" wrap="nowrap">
 						<Text size="xs" style={{ flex: 1 }}>
-							Username + Years + Model/Render
+							Link with model settings
 						</Text>
 						<CopyButton value={full} timeout={2000}>
 							{({ copied, copy }) => (

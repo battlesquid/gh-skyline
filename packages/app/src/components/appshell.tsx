@@ -4,10 +4,10 @@ import type { UserProfile } from "@/api/auth";
 import { useUrlStateSync } from "@/hooks/use-url-state";
 import { MQ } from "@/theme/media";
 import Viewer from "@/three/viewer";
+import { SkylineControls } from "./app-controls";
 import { HoverCard } from "./hover-card";
 import Loading from "./loading";
 import { Sidebar } from "./sidebar";
-import { SkylineControls } from "./app-controls";
 
 export interface EditorAppShellProps {
 	profile: UserProfile | null;
@@ -21,6 +21,9 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 
 	const isMobile = useMediaQuery(MQ.sm);
 
+	// Keep the URL (path + ?s=) in sync with the parameters store.
+	useUrlStateSync();
+
 	return (
 		<AppShell
 			header={{ height: 0 }}
@@ -33,7 +36,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 			withBorder={false}
 		>
 			<AppShell.Navbar p="md" pr={0}>
-				<Sidebar profile={profile}  />
+				<Sidebar profile={profile} />
 			</AppShell.Navbar>
 			<AppShell.Main style={{ height: "100vh" }}>
 				<Loading />

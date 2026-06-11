@@ -3,6 +3,7 @@ import {
 	decompressFromEncodedURIComponent,
 } from "lz-string";
 import { z } from "zod";
+import { formatYearText } from "@/api/utils";
 import { isBuiltinLogo } from "@/stores/logos";
 import {
 	DEFAULT_INPUT_PARAMETERS,
@@ -13,36 +14,41 @@ import { ExportFormat } from "@/three/utils/export";
 
 export const URL_PARAM_KEY = "s";
 
-export const MinimalShareSchema = z.object({
-	v: z.literal(1).catch(1),
-	type: z.literal("minimal").catch("minimal"),
-	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
-	startYear: z
-		.number()
-		.int()
-		.max(new Date().getFullYear())
-		.catch(DEFAULT_INPUT_PARAMETERS.startYear),
-	endYear: z
-		.number()
-		.int()
-		.max(new Date().getFullYear())
-		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
-});
+// Earliest year selectable; aligns with MIN_START_YEAR in generate_section.tsx.
+export const MIN_YEAR = 2000;
 
-export const FullShareSchema = z.object({
-	v: z.literal(1).catch(1),
-	type: z.literal("full").catch("full"),
-	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
-	startYear: z
-		.number()
-		.int()
-		.max(new Date().getFullYear())
-		.catch(DEFAULT_INPUT_PARAMETERS.startYear),
-	endYear: z
-		.number()
-		.int()
-		.max(new Date().getFullYear())
-		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
+/**
+ * Parse the `$years` path segment back into a year range.
+ * Inverse of {@link formatYearText}: "2024" -> {2024,2024}, "2024-2025" -> {2024,2025}.
+ * Returns null for anything malformed or out of range.
+ */
+export function parseYears(
+	raw: string,
+): { startYear: number; endYear: number } | null {
+	const match = raw.match(/^(\d{4})(?:-(\d{4}))?$/);
+	if (!match) return null;
+	const max = new Date().getFullYear();
+	const startYear = Number(match[1]);
+	const endYear = match[2] !== undefined ? Number(match[2]) : startYear;
+	if (startYear < MIN_YEAR || endYear < MIN_YEAR) return null;
+	if (startYear > max || endYear > max) return null;
+	if (startYear > endYear) return null;
+	return { startYear, endYear };
+}
+
+/** Build the `$years` path segment from a year range ("2024" or "2024-2025"). */
+export function formatYearsPath(startYear: number, endYear: number): string {
+	return formatYearText(startYear, endYear);
+}
+
+export const REST_VERSION = 1;
+
+/**
+ * The "rest" of the parameters that live in `?s=` — everything except
+ * name/startYear/endYear (those live in the path) and font (not yet shareable).
+ */
+export const RestShareSchema = z.object({
+	v: z.literal(REST_VERSION).catch(REST_VERSION),
 	nameOverride: z.string().catch(DEFAULT_INPUT_PARAMETERS.nameOverride),
 	insetText: z.boolean().catch(DEFAULT_INPUT_PARAMETERS.insetText),
 	towerSize: z.number().catch(DEFAULT_INPUT_PARAMETERS.towerSize),
@@ -64,28 +70,32 @@ export const FullShareSchema = z.object({
 	nameOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.nameOffset),
 	yearOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.yearOffset),
 });
+export type RestShareState = z.infer<typeof RestShareSchema>;
 
-export const ShareSchema = z.union([MinimalShareSchema, FullShareSchema]);
-export type ShareState = z.infer<typeof ShareSchema>;
+/** Single source of truth for which input keys are serialized into `?s=`. */
+export const REST_KEYS = [
+	"nameOverride",
+	"insetText",
+	"towerSize",
+	"dampening",
+	"shape",
+	"padding",
+	"textDepth",
+	"color",
+	"showContributionColor",
+	"scale",
+	"exportFormat",
+	"logo",
+	"logoScale",
+	"logoOffset",
+	"nameOffset",
+	"yearOffset",
+] as const satisfies readonly (keyof SkylineModelInputParameters)[];
 
-export function toMinimal(inputs: SkylineModelInputParameters): ShareState {
+export function toRest(inputs: SkylineModelInputParameters): RestShareState {
 	return {
-		v: 1,
-		type: "minimal",
-		name: inputs.name,
-		startYear: inputs.startYear,
-		endYear: inputs.endYear,
-	};
-}
-
-export function toFull(inputs: SkylineModelInputParameters): ShareState {
-	return {
-		v: 1,
-		type: "full",
-		name: inputs.name,
+		v: REST_VERSION,
 		nameOverride: inputs.nameOverride,
-		startYear: inputs.startYear,
-		endYear: inputs.endYear,
 		insetText: inputs.insetText,
 		towerSize: inputs.towerSize,
 		dampening: inputs.dampening,
@@ -107,17 +117,15 @@ export function toFull(inputs: SkylineModelInputParameters): ShareState {
 	};
 }
 
-export function encodeShareState(state: ShareState): string {
-	const json = JSON.stringify(state);
-	return compressToEncodedURIComponent(json);
+export function encodeRest(state: RestShareState): string {
+	return compressToEncodedURIComponent(JSON.stringify(state));
 }
 
-export function decodeShareState(encoded: string): ShareState | null {
+export function decodeRest(encoded: string): RestShareState | null {
 	try {
 		const json = decompressFromEncodedURIComponent(encoded);
 		if (!json) return null;
-		const parsed = JSON.parse(json);
-		const result = ShareSchema.safeParse(parsed);
+		const result = RestShareSchema.safeParse(JSON.parse(json));
 		if (!result.success) return null;
 		return result.data;
 	} catch {
@@ -125,67 +133,78 @@ export function decodeShareState(encoded: string): ShareState | null {
 	}
 }
 
-export function readShareFromUrl(urlString: string): ShareState | null {
-	try {
-		const url = new URL(urlString);
-		const encoded = url.searchParams.get(URL_PARAM_KEY);
-		if (!encoded) return null;
-		return decodeShareState(encoded);
-	} catch {
-		return null;
-	}
+/** True when every shareable "rest" key matches its default (so `?s=` can be omitted). */
+function restEqualsDefaults(inputs: SkylineModelInputParameters): boolean {
+	const rest = toRest(inputs);
+	return REST_KEYS.every((key) => rest[key] === DEFAULT_INPUT_PARAMETERS[key]);
 }
 
-export function getInitialInputsFromUrl(
-	urlString: string,
+/** Encoded `?s=` value, or null when the model is at defaults (keep the URL clean). */
+export function encodeRestIfNeeded(
+	inputs: SkylineModelInputParameters,
+): string | null {
+	if (restEqualsDefaults(inputs)) return null;
+	return encodeRest(toRest(inputs));
+}
+
+/**
+ * Build the initial store inputs from the route: name/years come from the path,
+ * the rest from the (optional) `?s=` blob. Unknown/garbage `s` falls back to defaults.
+ */
+export function getInitialInputs(
+	params: { name: string; years: string },
+	searchS?: string,
 ): Partial<SkylineModelInputParameters> {
-	const data = readShareFromUrl(urlString);
-	if (!data) return {};
-	if (data.type === "minimal") {
-		return {
-			name: data.name,
-			startYear: data.startYear,
-			endYear: data.endYear,
-		};
+	const out: Partial<SkylineModelInputParameters> = { name: params.name };
+	const years = parseYears(params.years);
+	if (years) {
+		out.startYear = years.startYear;
+		out.endYear = years.endYear;
 	}
-	return {
-		name: data.name,
-		nameOverride: data.nameOverride,
-		startYear: data.startYear,
-		endYear: data.endYear,
-		insetText: data.insetText,
-		towerSize: data.towerSize,
-		dampening: data.dampening,
-		shape: data.shape,
-		padding: data.padding,
-		textDepth: data.textDepth,
-		color: data.color,
-		showContributionColor: data.showContributionColor,
-		scale: data.scale,
-		exportFormat: data.exportFormat,
-		// Ignore unknown (e.g. custom) logo keys, falling back to the default.
-		logo: isBuiltinLogo(data.logo) ? data.logo : DEFAULT_INPUT_PARAMETERS.logo,
-		logoScale: data.logoScale,
-		logoOffset: data.logoOffset,
-		nameOffset: data.nameOffset,
-		yearOffset: data.yearOffset,
-	};
+	if (searchS) {
+		const rest = decodeRest(searchS);
+		if (rest) {
+			out.nameOverride = rest.nameOverride;
+			out.insetText = rest.insetText;
+			out.towerSize = rest.towerSize;
+			out.dampening = rest.dampening;
+			out.shape = rest.shape;
+			out.padding = rest.padding;
+			out.textDepth = rest.textDepth;
+			out.color = rest.color;
+			out.showContributionColor = rest.showContributionColor;
+			out.scale = rest.scale;
+			out.exportFormat = rest.exportFormat;
+			// Ignore unknown (e.g. custom) logo keys, falling back to the default.
+			out.logo = isBuiltinLogo(rest.logo)
+				? rest.logo
+				: DEFAULT_INPUT_PARAMETERS.logo;
+			out.logoScale = rest.logoScale;
+			out.logoOffset = rest.logoOffset;
+			out.nameOffset = rest.nameOffset;
+			out.yearOffset = rest.yearOffset;
+		}
+	}
+	return out;
 }
 
 export function buildShareLinks(
 	inputs: SkylineModelInputParameters,
 	href?: string,
 ): { minimal: string; full: string } {
-	const minimalState = toMinimal(inputs);
-	const fullState = toFull(inputs);
-	const minEnc = encodeShareState(minimalState);
-	const fullEnc = encodeShareState(fullState);
 	const base = new URL(href ?? window.location.href);
-	const url1 = new URL(base.toString());
-	url1.searchParams.set(URL_PARAM_KEY, minEnc);
-	const minimal = url1.toString();
-	const url2 = new URL(base.toString());
-	url2.searchParams.set(URL_PARAM_KEY, fullEnc);
-	const full = url2.toString();
+	const path = `/${encodeURIComponent(inputs.name)}/${formatYearsPath(
+		inputs.startYear,
+		inputs.endYear,
+	)}`;
+
+	const minimalUrl = new URL(path, base.origin);
+	const minimal = minimalUrl.toString();
+
+	const encoded = encodeRestIfNeeded(inputs);
+	const fullUrl = new URL(path, base.origin);
+	if (encoded) fullUrl.searchParams.set(URL_PARAM_KEY, encoded);
+	const full = fullUrl.toString();
+
 	return { minimal, full };
 }
