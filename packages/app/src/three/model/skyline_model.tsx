@@ -1,6 +1,5 @@
 import { darken } from "@mantine/core";
 import { Instances } from "@react-three/drei";
-import { Select } from "@react-three/postprocessing";
 import { type JSX, type RefObject, useEffect } from "react";
 import { Color, type Group as ThreeGroup } from "three";
 import type {

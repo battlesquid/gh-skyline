@@ -146,6 +146,9 @@ export const makeManifoldFrustum = (
 		[operation](nameExtrusion.translate(nameSlotPosition))
 		[operation](yearExtrusion.translate(yearSlotPosition));
 
+	nameExtrusion.delete();
+	yearExtrusion.delete();
+
 	// The logo is an arbitrary user SVG, so it uses the EvenOdd fill rule to
 	// honour inner holes. Right-side anchored on the same front face as the
 	// text, sitting outboard of the (right-anchored) name.
@@ -165,6 +168,7 @@ export const makeManifoldFrustum = (
 			TRANSLATE_LEN * normal[2],
 		] as const;
 		manifold = manifold[operation](logoExtrusion.translate(logoSlotPosition));
+		logoExtrusion.delete();
 	}
 
 	return { manifold, angle, normal };
@@ -176,6 +180,7 @@ export const makeThreeFrustum = (
 	const { manifold, angle } = makeManifoldFrustum(...args);
 	const normal = getThreeNormal(args[0]);
 	const geometry = mesh2geometry(manifold.getMesh());
+	manifold.delete();
 	return { angle, geometry, normal };
 };
 

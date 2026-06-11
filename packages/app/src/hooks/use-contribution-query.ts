@@ -1,12 +1,12 @@
-import type { ResultOf } from "gql.tada";
-import { useEffect, useState } from "react";
-import type { OperationResult } from "urql";
 import { client } from "@/api/client";
 import { ContributionQuery } from "@/api/query";
 import type { ContributionWeeks } from "@/api/types";
-import { useContributionQueryStore } from "@/stores/query";
-import { useShallow } from "zustand/shallow";
 import { useParametersContext } from "@/stores/parameters";
+import { useContributionQueryStore } from "@/stores/query";
+import type { ResultOf } from "gql.tada";
+import { useEffect } from "react";
+import type { OperationResult } from "urql";
+import { useShallow } from "zustand/shallow";
 
 interface ExtendedQueryProps {
 	name?: string;
