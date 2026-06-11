@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Group, Portal, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Card, Group, Portal, Tooltip } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
 	IconCamera,
@@ -46,13 +46,14 @@ export function SkylineControls({
 						</Tooltip>
 					)}
 					<Tooltip label="Reset View">
-						<ActionIcon
+						<Button
 							variant="subtle"
 							aria-label="Reset View"
 							onClick={() => resetView()}
+							leftSection={<IconHome stroke={1} /> }
 						>
-							<IconHome stroke={1} />
-						</ActionIcon>
+							Reset View
+						</Button>
 					</Tooltip>
 					<Tooltip label={`Enable ${capitalize(otherMode)} Camera`}>
 						<ActionIcon

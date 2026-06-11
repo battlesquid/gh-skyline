@@ -20,9 +20,10 @@ function CameraControls() {
 		}
 
 		controls.current.normalizeRotations();
-		controls.current.setLookAt(120, 0, 200, 0, 0, 0, true);
 		if (model !== null) {
+			controls.current.setLookAt(120, 0, 200, 0, 0, 0, true);
 			controls.current.fitToBox(model, true, { ...cameraPadding(20) });
+			controls.current.rotate(0, -0.35, true);
 		}
 	}, [reset, model]);
 

@@ -18,7 +18,7 @@
 }
 
 .control:hover {
-	background-color: var(--mantine-color-default-hover);
+	background-color: var(--mantine-color-body) !important;
 }
 
 /* Gives breathing room to the content */
