@@ -3,13 +3,13 @@ import {
 	decompressFromEncodedURIComponent,
 } from "lz-string";
 import { z } from "zod";
-
+import { isBuiltinLogo } from "@/stores/logos";
 import {
 	DEFAULT_INPUT_PARAMETERS,
+	SkylineBaseShape,
 	type SkylineModelInputParameters,
 } from "@/stores/parameters";
 import { ExportFormat } from "@/three/utils/export";
-import { SkylineBaseShape } from "@/stores/parameters";
 
 export const URL_PARAM_KEY = "s";
 
@@ -58,6 +58,8 @@ export const FullShareSchema = z.object({
 	exportFormat: z
 		.enum(ExportFormat)
 		.catch(DEFAULT_INPUT_PARAMETERS.exportFormat),
+	logo: z.string().catch(DEFAULT_INPUT_PARAMETERS.logo),
+	logoScale: z.number().catch(DEFAULT_INPUT_PARAMETERS.logoScale),
 	logoOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.logoOffset),
 	nameOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.nameOffset),
 	yearOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.yearOffset),
@@ -94,6 +96,11 @@ export function toFull(inputs: SkylineModelInputParameters): ShareState {
 		showContributionColor: inputs.showContributionColor,
 		scale: inputs.scale,
 		exportFormat: inputs.exportFormat,
+		// Only built-in logos are shareable; custom uploads are never serialized.
+		logo: isBuiltinLogo(inputs.logo)
+			? inputs.logo
+			: DEFAULT_INPUT_PARAMETERS.logo,
+		logoScale: inputs.logoScale,
 		logoOffset: inputs.logoOffset,
 		nameOffset: inputs.nameOffset,
 		yearOffset: inputs.yearOffset,
@@ -156,6 +163,9 @@ export function getInitialInputsFromUrl(
 		showContributionColor: data.showContributionColor,
 		scale: data.scale,
 		exportFormat: data.exportFormat,
+		// Ignore unknown (e.g. custom) logo keys, falling back to the default.
+		logo: isBuiltinLogo(data.logo) ? data.logo : DEFAULT_INPUT_PARAMETERS.logo,
+		logoScale: data.logoScale,
 		logoOffset: data.logoOffset,
 		nameOffset: data.nameOffset,
 		yearOffset: data.yearOffset,

@@ -1,6 +1,7 @@
 import { darken } from "@mantine/core";
 import { Instances } from "@react-three/drei";
-import { JSX, RefObject, useEffect } from "react";
+import { Select } from "@react-three/postprocessing";
+import { type JSX, type RefObject, useEffect } from "react";
 import { Color, type Group as ThreeGroup } from "three";
 import type {
 	ContributionDay,
@@ -13,11 +14,10 @@ import {
 	DEFAULT_INPUT_PARAMETERS,
 	useParametersContext,
 } from "@/stores/parameters";
-import { ContributionTower } from "./tower";
-import { SkylineBase } from "./base";
-import { GROUPS } from "../utils/constants";
 import { useContributionQueryStore } from "@/stores/query";
-import { Select } from "@react-three/postprocessing";
+import { GROUPS } from "../utils/constants";
+import { SkylineBase } from "./base";
+import { ContributionTower } from "./tower";
 
 interface TowersRender {
 	towers: (JSX.Element | null)[];
@@ -63,6 +63,9 @@ export function SkylineModel({ group }: SkylineModelProps) {
 		inputs.shape,
 		inputs.insetText,
 		inputs.showContributionColor,
+		inputs.logo,
+		inputs.logoScale,
+		inputs.logoOffset,
 	]);
 
 	const renderDay = (

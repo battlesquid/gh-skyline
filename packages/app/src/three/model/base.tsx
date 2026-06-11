@@ -1,25 +1,29 @@
-import { useMemo, useRef } from "react";
-import { type Group, MeshStandardMaterial } from "three";
+import { Selection } from "@react-three/postprocessing";
+import { useMemo } from "react";
+import { MeshStandardMaterial } from "three";
 import { useShallow } from "zustand/shallow";
-import { useExtrudedSvg } from "../../hooks/use-extruded-svg";
 import { toPolygons, useTTFLoader } from "../../hooks/use-ttf-loader";
-import { LOGOS } from "../../logos";
 import {
 	type ManifoldFrustumArgs,
 	type ManifoldFrustumText,
 	makeThreeFrustum,
 } from "../../manifold/frustum";
-import { useParametersContext } from "../../stores/parameters";
-import { SkylineBaseShape } from "../../stores/parameters";
-import { GROUPS } from "../utils/constants";
+import { svgToPolygons } from "../../manifold/svg";
+import { DEFAULT_LOGO_SELECTION, useLogoStore } from "../../stores/logos";
+import {
+	SkylineBaseShape,
+	useParametersContext,
+} from "../../stores/parameters";
 import { useContributionQueryStore } from "../../stores/query";
-import { Selection } from "@react-three/postprocessing";
+import { GROUPS } from "../utils/constants";
 
+const LOGO_HEIGHT_FACTOR = 0.65;
 
 export function SkylineBase() {
 	const inputs = useParametersContext(useShallow((state) => state.inputs));
 	const computed = useParametersContext(useShallow((state) => state.computed));
 	const years = useContributionQueryStore((state) => state.results);
+	const logos = useLogoStore((state) => state.logos);
 
 	// TODO: dont memoize this, maybe make a hook to just update props
 	const material = useMemo(
@@ -32,21 +36,6 @@ export function SkylineBase() {
 			}),
 		[computed.renderColor],
 	);
-
-	const logoRef = useRef<Group | null>(null);
-	const logo = useExtrudedSvg({
-		svg: LOGOS.Circle,
-		ref: logoRef,
-		depth: inputs.textDepth,
-		material,
-		castShadow: true,
-		receiveShadow: true,
-		onObjectReady(group) {
-			const wantedHeight = 0.65 * computed.platformHeight;
-			const scale = wantedHeight / logo.svgBoundingBox.height;
-			group.scale.set(scale, -scale, 1);
-		},
-	});
 
 	const font = useTTFLoader(inputs.font);
 
@@ -91,15 +80,38 @@ export function SkylineBase() {
 		[font, inputs.yearOffset, computed.formattedYear],
 	);
 
+	const logoSvg = logos[inputs.logo] ?? logos[DEFAULT_LOGO_SELECTION];
+	const logoManifoldProps = useMemo((): ManifoldFrustumText => {
+		try {
+			return {
+				points: svgToPolygons(
+					logoSvg,
+					LOGO_HEIGHT_FACTOR * computed.platformHeight * inputs.logoScale,
+				),
+				offset: inputs.logoOffset,
+			};
+		} catch (e) {
+			console.error("Failed to convert logo SVG to polygons", e);
+			return { points: [], offset: inputs.logoOffset };
+		}
+	}, [logoSvg, computed.platformHeight, inputs.logoScale, inputs.logoOffset]);
+
 	const frustum = useMemo(
 		() =>
 			makeThreeFrustum(
 				frustumProps,
 				nameManifoldProps,
 				yearManifoldProps,
+				logoManifoldProps,
 				inputs.insetText,
 			),
-		[frustumProps, nameManifoldProps, yearManifoldProps, inputs.insetText],
+		[
+			frustumProps,
+			nameManifoldProps,
+			yearManifoldProps,
+			logoManifoldProps,
+			inputs.insetText,
+		],
 	);
 
 	// TODO: if text depth becomes a configurable parameter, this check probably won't suffice
@@ -113,42 +125,15 @@ export function SkylineBase() {
 	return (
 		<group name={GROUPS.BASE}>
 			<Selection>
-			<mesh
-				geometry={frustum.geometry}
-				position={[0, -computed.halfPlatformHeight, TEXT_EXTRUSION_OFFSET]}
-				material={material}
-				onPointerOver={(e) => e.stopPropagation()}
-				castShadow
-				receiveShadow
-			>
-				{/* <lineSegments
-					name="edges"
-					renderOrder={10}
-				>
-					<edgesGeometry args={[frustum.geometry, 90]} />
-					<lineBasicMaterial color={"#A70154"} />
-				</lineSegments> */}
-
-			</mesh>
+				<mesh
+					geometry={frustum.geometry}
+					position={[0, -computed.halfPlatformHeight, TEXT_EXTRUSION_OFFSET]}
+					material={material}
+					onPointerOver={(e) => e.stopPropagation()}
+					castShadow
+					receiveShadow
+				/>
 			</Selection>
-			<object3D
-				ref={logoRef}
-				rotation={[frustum.angle, 0, 0]}
-				position={[
-					-computed.halfModelLength -
-					inputs.padding +
-					inputs.logoOffset -
-					frustum.normal.x * (logo.threeBoundingBox.z / 2),
-					-computed.halfPlatformHeight +
-					frustum.normal.y * (logo.threeBoundingBox.z / 2),
-					(computed.modelWidth * years.length) / 2 +
-					inputs.padding +
-					frustum.normal.z * (logo.threeBoundingBox.z / 2) +
-					frustumProps.lengthPadding / 4,
-				]}
-				castShadow
-				receiveShadow
-			/>
 		</group>
 	);
 }

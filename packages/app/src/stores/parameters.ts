@@ -5,10 +5,11 @@ import { formatYearText } from "@/api/utils";
 import { ExportFormat } from "@/three/utils/export";
 import { safeString } from "@/utils";
 import { DEFAULT_FONT } from "./fonts";
+import { DEFAULT_LOGO } from "./logos";
 
 export enum SkylineBaseShape {
 	Prism = "prism",
-	Frustum = "frustum"
+	Frustum = "frustum",
 }
 
 export interface SkylineModelInputParameters {
@@ -28,6 +29,8 @@ export interface SkylineModelInputParameters {
 	filename: string;
 	scale: number;
 	exportFormat: ExportFormat;
+	logo: string;
+	logoScale: number;
 	logoOffset: number;
 	nameOffset: number;
 	yearOffset: number;
@@ -116,7 +119,9 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	filename: "",
 	scale: 1,
 	exportFormat: ExportFormat.ThreeMF,
-	logoOffset: 10,
+	logo: DEFAULT_LOGO,
+	logoScale: 1,
+	logoOffset: 8,
 	nameOffset: 15,
 	yearOffset: 10,
 });

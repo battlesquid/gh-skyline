@@ -7,16 +7,17 @@ import {
 	ScrollArea,
 	Stack,
 	Title,
-	Typography,
 } from "@mantine/core";
 import {
 	IconBrandGithubFilled,
 	IconCube,
 	IconDownload,
 	IconPaint,
+	IconPhoto,
 	IconTextSize,
 } from "@tabler/icons-react";
 import type { UserProfile } from "@/api/auth";
+import { useContributionQueryStore } from "@/stores/query";
 import accordionClasses from "@/styles/accordion.module.css";
 import { Profile } from "./profile";
 import { BasePaddingInput } from "./sidebar/base-padding";
@@ -27,12 +28,12 @@ import { FilenameInput } from "./sidebar/filename";
 import { FontInput } from "./sidebar/font";
 import { GenerateSection } from "./sidebar/generate_section";
 import { InsetTextCheckbox } from "./sidebar/inset-text";
+import { LogoInput } from "./sidebar/logo";
 import { RenderColorInput } from "./sidebar/render-color";
 import { ScaleInput } from "./sidebar/scale";
 import { ShareButton } from "./sidebar/share";
 import { TowerDampeningInput } from "./sidebar/tower-dampening";
 import { UsernameOverrideInput } from "./sidebar/username-override";
-import { useContributionQueryStore } from "@/stores/query";
 
 interface SidebarProps {
 	fromDrawer?: boolean;
@@ -69,7 +70,7 @@ export function Sidebar(props: SidebarProps) {
 						{/* <Title className="mona-sans-wide" tt="uppercase" order={5}>
 							Settings
 						</Title> */}
-						<Accordion classNames={accordionClasses}>
+						<Accordion classNames={accordionClasses} multiple>
 							<Accordion.Item value="text_options">
 								<Accordion.Control icon={<IconTextSize stroke={1} size={20} />}>
 									<Title className="mona-sans-wide" tt="uppercase" order={6}>
@@ -95,6 +96,18 @@ export function Sidebar(props: SidebarProps) {
 										<TowerDampeningInput />
 										<BasePaddingInput />
 										<BaseShapeInput />
+									</Stack>
+								</Accordion.Panel>
+							</Accordion.Item>
+							<Accordion.Item value="logo_options">
+								<Accordion.Control icon={<IconPhoto stroke={1} size={20} />}>
+									<Title className="mona-sans-wide" tt="uppercase" order={6}>
+										Logo
+									</Title>
+								</Accordion.Control>
+								<Accordion.Panel>
+									<Stack>
+										<LogoInput />
 									</Stack>
 								</Accordion.Panel>
 							</Accordion.Item>

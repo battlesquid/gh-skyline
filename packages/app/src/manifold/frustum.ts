@@ -84,6 +84,7 @@ export const makeManifoldFrustum = (
 	frustum: ManifoldFrustumArgs,
 	name: ManifoldFrustumText,
 	year: ManifoldFrustumText,
+	logo: ManifoldFrustumText,
 	inset: boolean,
 ): ManifoldFrustum => {
 	const { length, width, lengthPadding, widthPadding, height } = frustum;
@@ -95,6 +96,7 @@ export const makeManifoldFrustum = (
 
 	const nameSlotOffset = name.offset ?? 0;
 	const yearSlotOffset = year.offset ?? 0;
+	const logoSlotOffset = logo.offset ?? 0;
 
 	const angle = -getSlopeAngle(frustum);
 	const normal = getNormal(frustum);
@@ -139,10 +141,31 @@ export const makeManifoldFrustum = (
 		TRANSLATE_LEN * normal[2],
 	] as const;
 
-	const manifold = CrossSection.square([baseWidth, baseLength], true)
+	let manifold = CrossSection.square([baseWidth, baseLength], true)
 		.extrude(height, 0, 0, [topWidthScale, topLengthScale], true)
 		[operation](nameExtrusion.translate(nameSlotPosition))
 		[operation](yearExtrusion.translate(yearSlotPosition));
+
+	// The logo is an arbitrary user SVG, so it uses the EvenOdd fill rule to
+	// honour inner holes. Right-side anchored on the same front face as the
+	// text, sitting outboard of the (right-anchored) name.
+	if (logo.points.length > 0) {
+		const logoExtrusion = centerManifold(
+			new CrossSection(logo.points, "EvenOdd")
+				.extrude(EXTRUSION_LEN)
+				.rotate([toDeg(angle) - 90, 0, 180]),
+		);
+		const logoDimensions = boundingBoxDimensions(logoExtrusion.boundingBox());
+		const logoSlotPosition = [
+			baseWidth / 2 -
+				logoDimensions.width / 2 -
+				(logoSlotOffset + widthPadding / 2) +
+				TRANSLATE_LEN * normal[0],
+			length / 2 + lengthPadding / 4 + TRANSLATE_LEN * normal[1],
+			TRANSLATE_LEN * normal[2],
+		] as const;
+		manifold = manifold[operation](logoExtrusion.translate(logoSlotPosition));
+	}
 
 	return { manifold, angle, normal };
 };
@@ -164,6 +187,9 @@ export const emptyThreeFrustum = (): ThreeFrustum =>
 			height: 0,
 			widthPadding: 0,
 			lengthPadding: 0,
+		},
+		{
+			points: [],
 		},
 		{
 			points: [],

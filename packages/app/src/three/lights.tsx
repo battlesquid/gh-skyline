@@ -34,12 +34,10 @@ function Lights() {
                 position={[5, 15, 10]}
                 castShadow
             />
-            <Suspense>
-                <Environment
-                    files="/three/wildflower_field_4k.jpg"
-                    environmentIntensity={0.8}
-                />
-            </Suspense>
+            <Environment
+                files="/three/wildflower_field_4k.jpg"
+                environmentIntensity={0.8}
+            />
             <SoftShadows size={80} samples={10} />
         </group>
     )
