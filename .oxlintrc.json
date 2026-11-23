@@ -1,0 +1,21 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "react"],
+	"categories": { "correctness": "error" },
+	"ignorePatterns": [
+		"**/dist/**",
+		"**/public/**",
+		"**/graphql-env.d.ts",
+		"**/routeTree.gen.ts",
+		"**/theme/theme.ts",
+		"**/theme/css_variable_resolver.ts"
+	],
+	"rules": {
+		"eslint/no-unused-vars": "warn",
+		"react/exhaustive-deps": "off",
+		"react/immutability": "warn",
+		"react/purity": "warn",
+		"react/refs": "warn",
+		"react/set-state-in-effect": "warn"
+	}
+}

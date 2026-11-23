@@ -11,7 +11,10 @@ import {
 import { IconCheck, IconCopy, IconShare2 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { buildShareLinks } from "../../share/urlShare";
-import { SkylineDatasource, useParametersContext } from "../../stores/parameters";
+import {
+	SkylineDatasource,
+	useParametersContext,
+} from "../../stores/parameters";
 
 export function ShareButton() {
 	const [opened, setOpened] = useState(false);

@@ -1,0 +1,20 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"printWidth": 80,
+	"sortImports": { "newlinesBetween": false },
+	"sortPackageJson": false,
+	"ignorePatterns": [
+		"**/*.md",
+		"**/*.yaml",
+		"**/*.yml",
+		"**/public/**",
+		"packages/app/src/data.ts",
+		"**/graphql-env.d.ts",
+		"**/routeTree.gen.ts",
+		"**/theme/style.css",
+		"**/theme/theme.ts",
+		"**/theme/css_variable_resolver.ts",
+		"**/tsconfig*.json"
+	]
+}

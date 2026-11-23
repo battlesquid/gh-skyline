@@ -5,7 +5,12 @@ import { EditorAppShell } from "../components/appshell";
 import { useProfile } from "../hooks/useProfile";
 import { getInitialInputsFromUrl } from "../share/urlShare";
 import { preloadDefaultFonts } from "../stores/fonts";
-import { createParametersStore, DEFAULT_INPUT_PARAMETERS, ParametersContext, SkylineDatasource } from "../stores/parameters";
+import {
+	createParametersStore,
+	DEFAULT_INPUT_PARAMETERS,
+	ParametersContext,
+	SkylineDatasource,
+} from "../stores/parameters";
 import "../styles/editor.css";
 import "../styles/page.css";
 

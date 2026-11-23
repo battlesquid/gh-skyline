@@ -48,7 +48,8 @@ And so here we are!
 - 3D: [three.js](https://threejs.org/), [@react-three/fiber](https://r3f.docs.pmnd.rs/getting-started/introduction) (and related `@react-three` libraries), [manifold](https://github.com/elalish/manifold)
 - OAuth: [Cloudflare Workers](https://workers.cloudflare.com/)
 - Routing: [Tanstack Router](https://tanstack.com/router/latest)
-- Build: [Rsbuild](https://rsbuild.rs/)
+- Build: [Vite](https://vite.dev/) with Oxc transforms and Rolldown
+- Tooling: [Oxc](https://oxc.rs/) (Oxlint and Oxfmt), [TypeScript 7](https://www.typescriptlang.org/)
 
 ## Local Development
 
@@ -66,11 +67,25 @@ Start the dev server:
 pnpm dev
 ```
 
-Keep things tidy:
+Check types, lint, and formatting:
+
+```bash
+pnpm typecheck
+pnpm neat
+```
+
+Apply lint and formatting fixes:
 
 ```bash
 pnpm neat:fix
 ```
+
+The app's build and preview commands are `pnpm --filter @skyline/app build`
+and `pnpm --filter @skyline/app preview`.
+
+Workspace type checks use TypeScript 7. The app keeps the TypeScript 6
+compatibility package for gql.tada tooling that still needs the JavaScript
+compiler API.
 
 ## Acknowledgements
 - Big thanks to [@justinfernald](https://github.com/justinfernald), who contributed many key features, improvements, and ideas throughout development.

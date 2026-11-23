@@ -1,10 +1,10 @@
 import type { ResultOf } from "gql.tada";
 import { useEffect, useState } from "react";
 import type { OperationResult } from "urql";
+import { isAuthenticated } from "../api/auth";
 import { client } from "../api/client";
 import { ContributionQuery } from "../api/query";
 import type { ContributionWeeks } from "../api/types";
-import { isAuthenticated } from "../api/auth";
 import { SkylineDatasource, useParametersContext } from "../stores/parameters";
 
 interface ExtendedQueryProps {

@@ -40,11 +40,10 @@ async function fetchGitHubUsers(query: string): Promise<GitHubUser[]> {
 	);
 }
 
-interface GitHubUsernameInputProps
-	extends Omit<
-		React.ComponentPropsWithoutRef<typeof Input>,
-		"value" | "defaultValue" | "onChange"
-	> {
+interface GitHubUsernameInputProps extends Omit<
+	React.ComponentPropsWithoutRef<typeof Input>,
+	"value" | "defaultValue" | "onChange"
+> {
 	debounceMs?: number;
 	placeholder?: string;
 	value?: string;

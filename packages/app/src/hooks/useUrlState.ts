@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { isAuthenticated } from "../api/auth";
 import {
 	encodeShareState,
 	getInitialInputsFromUrl,
@@ -7,7 +8,6 @@ import {
 	URL_PARAM_KEY,
 } from "../share/urlShare";
 import { SkylineDatasource, useParametersContext } from "../stores/parameters";
-import { isAuthenticated } from "../api/auth";
 
 const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
 

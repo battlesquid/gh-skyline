@@ -7,14 +7,16 @@
 	],
 	"scripts": {
 		"dev": "pnpm --filter=@skyline/app run dev",
-		"neat": "biome check .",
-		"neat:fix": "biome check . --write",
+		"neat": "oxlint && oxfmt --check",
+		"neat:fix": "oxlint --fix && oxfmt",
+		"typecheck": "tsc -p packages/app && tsc -p packages/worker",
 		"clean:dist": "rm -rf ./packages/**/dist packages/**/tsconfig.tsbuildinfo",
 		"clean:packages": "rm -rf packages/**/node_modules node_modules"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.1.2",
-		"typescript": "^5.6.3"
+		"oxfmt": "^0.80.0",
+		"oxlint": "^1.95.0",
+		"typescript": "^7.0.2"
 	},
 	"volta": {
 		"node": "22.14.0",

@@ -21,3 +21,4 @@ jobs:
             cache: "pnpm"
       - run: pnpm i
       - run: pnpm neat
+      - run: pnpm typecheck

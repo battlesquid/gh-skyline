@@ -6,6 +6,8 @@
 # Dist
 node_modules
 dist/
+.tanstack/
+*.tsbuildinfo
 
 # IDE
 !.vscode/extensions.json

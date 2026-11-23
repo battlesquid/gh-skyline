@@ -1,17 +1,17 @@
 import { createContext, useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { DAYS_IN_WEEK, WEEKS_IN_YEAR } from "../api/constants";
+import { ContributionWeeks } from "../api/types";
 import { formatYearText } from "../api/utils";
+import { SAMPLE_DATA } from "../data";
 import { ExportFormat } from "../three/export";
 import { SkylineBaseShape } from "../three/types";
 import { safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
-import { ContributionWeeks } from "../api/types";
-import { SAMPLE_DATA } from "../data";
 
 export enum SkylineDatasource {
 	Github = "github",
-	Custom = "custom"
+	Custom = "custom",
 }
 
 export interface SkylineModelInputParameters {
@@ -125,7 +125,7 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	logoOffset: 10,
 	nameOffset: 15,
 	yearOffset: 10,
-	customData: SAMPLE_DATA
+	customData: SAMPLE_DATA,
 });
 
 export const DEFAULT_COMPUTED_PARAMETERS = Object.freeze(

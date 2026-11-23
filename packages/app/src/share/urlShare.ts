@@ -3,7 +3,6 @@ import {
 	decompressFromEncodedURIComponent,
 } from "lz-string";
 import { z } from "zod";
-
 import {
 	DEFAULT_INPUT_PARAMETERS,
 	type SkylineModelInputParameters,

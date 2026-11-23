@@ -6,6 +6,6 @@
 	"account_id": "43a4f22039b08a57004057adc36bf4d0",
 	"vars": {
 		"PNPM_VERSION": "10.7.0",
-		"NODE_VERSION": "22.14.0"
-	}
+		"NODE_VERSION": "22.14.0",
+	},
 }

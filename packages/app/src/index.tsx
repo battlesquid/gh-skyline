@@ -9,7 +9,7 @@ import { routeTree } from "./routeTree.gen";
 import { shadcnCssVariableResolver } from "./theme/css_variable_resolver";
 import { shadcnTheme } from "./theme/theme";
 import "@mantine/core/styles.css";
-import '@mantine/dropzone/styles.css';
+import "@mantine/dropzone/styles.css";
 import "./theme/style.css";
 
 const router = createRouter({ routeTree });
