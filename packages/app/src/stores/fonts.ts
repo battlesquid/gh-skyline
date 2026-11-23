@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useTTFLoader } from "../hooks/useTTFLoader";
+import { preloadFont } from "../hooks/useTTFLoader";
 
 const FONT_KEY = "fonts";
 
@@ -27,7 +27,7 @@ export const DEFAULT_FONT_SELECTION = "Mona Sans";
 export const DEFAULT_FONT = DEFAULT_FONTS[DEFAULT_FONT_SELECTION];
 
 export const preloadDefaultFonts = () => {
-	Object.values(DEFAULT_FONTS).forEach(useTTFLoader.preload);
+	Object.values(DEFAULT_FONTS).forEach(preloadFont);
 };
 
 export const getFontsLocal = (): FontMap => {
@@ -51,7 +51,7 @@ export const useFontStore = create<FontStore>((set) => ({
 	},
 	addFont: (name, url) => {
 		try {
-			useTTFLoader.preload(url);
+			preloadFont(url);
 			set((state) => ({ fonts: { ...state.fonts, [name]: url } }));
 			addFontLocal(name, url);
 			return true;

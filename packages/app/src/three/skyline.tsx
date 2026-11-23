@@ -1,7 +1,6 @@
 import { Environment, Grid, SoftShadows } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useMemo, useRef } from "react";
-import { DoubleSide, type Group } from "three";
+import { Suspense, useMemo } from "react";
 import type { ContributionWeeks } from "../api/types";
 import { useParametersContext } from "../stores/parameters";
 import { CameraControls, SKYLINE_CAMERA_POSITION } from "./controls";
@@ -9,6 +8,7 @@ import { SkylineModel } from "./skyline_model";
 
 export interface SkylineProps {
 	years: ContributionWeeks[];
+	firstYear: number;
 }
 
 const camera = {
@@ -19,15 +19,15 @@ const camera = {
 };
 
 export function Skyline(props: SkylineProps) {
-	const { years } = props;
-	const computed = useParametersContext((state) => state.computed);
-	const group = useRef<Group | null>(null);
+	const platformHeight = useParametersContext(
+		(state) => state.computed.platformHeight,
+	);
 	const style = useMemo(() => ({ height: "100%" }), []);
 	return (
 		<Canvas camera={camera} id="skyline-canvas" style={style} shadows>
 			<Suspense>
-				<SkylineModel group={group} years={years} />
-				<CameraControls group={group} years={years} />
+				<SkylineModel {...props} />
+				<CameraControls {...props} />
 				<ambientLight intensity={Math.PI / 2} />
 				<spotLight
 					castShadow
@@ -57,7 +57,7 @@ export function Skyline(props: SkylineProps) {
 				<SoftShadows size={80} samples={10} />
 				<Grid
 					name="grid"
-					position={[0, -computed.platformHeight, 0]}
+					position={[0, -platformHeight, 0]}
 					cellColor={"#4e98b4"}
 					cellSize={10}
 					sectionColor={"#4e98b4"}

@@ -4,8 +4,14 @@ import { DAYS_IN_WEEK, WEEKS_IN_YEAR } from "../api/constants";
 import { ContributionWeeks } from "../api/types";
 import { formatYearText } from "../api/utils";
 import { SAMPLE_DATA } from "../data";
-import { ExportFormat } from "../three/export";
-import { SkylineBaseShape } from "../three/types";
+import {
+	DEFAULT_FRONT_OPTIONS,
+	ExportFormat,
+	type FRONT_LOGOS,
+	type FrontItem,
+	type FrontOptions,
+	SkylineBaseShape,
+} from "../three/types";
 import { getWeekNo, safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
 
@@ -35,6 +41,10 @@ export interface SkylineModelInputParameters {
 	logoOffset: number;
 	nameOffset: number;
 	yearOffset: number;
+	front: Record<FrontItem, FrontOptions>;
+	frontLogo: (typeof FRONT_LOGOS)[number];
+	connectYears: boolean;
+	jointOffsets: Record<string, number>;
 	customData: ContributionWeeks[];
 }
 
@@ -62,6 +72,7 @@ export interface SkylineModelParameters {
 export type ParametersStore = {
 	inputs: SkylineModelInputParameters;
 	computed: SkylineModelComputedParameters;
+	modelRevision: number;
 	setInputs: (parameters: Partial<SkylineModelInputParameters>) => void;
 };
 
@@ -141,8 +152,16 @@ export const DEFAULT_INPUT_PARAMETERS = Object.freeze({
 	logoOffset: 10,
 	nameOffset: 15,
 	yearOffset: 10,
+	front: Object.freeze({
+		name: DEFAULT_FRONT_OPTIONS,
+		year: DEFAULT_FRONT_OPTIONS,
+		logo: DEFAULT_FRONT_OPTIONS,
+	}),
+	frontLogo: "Circle",
+	connectYears: false,
+	jointOffsets: Object.freeze({}),
 	customData: SAMPLE_DATA,
-});
+} satisfies SkylineModelInputParameters);
 
 export const DEFAULT_COMPUTED_PARAMETERS = Object.freeze(
 	getComputedParameters(DEFAULT_INPUT_PARAMETERS),
@@ -160,13 +179,28 @@ export const createParametersStore = (
 	return createStore<ParametersStore>()((set, get) => ({
 		inputs: allInputProps,
 		computed: allComputedProps,
+		modelRevision: 0,
 		setInputs: (_inputs: Partial<SkylineModelInputParameters>) => {
+			const previous = get();
 			const inputs: SkylineModelInputParameters = {
-				...get().inputs,
+				...previous.inputs,
 				..._inputs,
 			};
 			const computed = getComputedParameters(inputs);
-			set(() => ({ inputs, computed }));
+			const affectsModel = (
+				Object.keys(_inputs) as (keyof SkylineModelInputParameters)[]
+			).some(
+				(key) =>
+					key !== "filename" &&
+					key !== "exportFormat" &&
+					key !== "scale" &&
+					inputs[key] !== previous.inputs[key],
+			);
+			set({
+				inputs,
+				computed,
+				modelRevision: previous.modelRevision + Number(affectsModel),
+			});
 		},
 	}));
 };

@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
 	envPrefix: "PUBLIC_",
+	optimizeDeps: { include: ["three-3mf-exporter"] },
 	plugins: [
 		tanstackRouter({ target: "react", autoCodeSplitting: true }),
 		react(),

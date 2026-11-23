@@ -15,6 +15,7 @@ interface ExtendedQueryProps {
 
 export interface ExtendedQueryResult {
 	years: ContributionWeeks[];
+	firstYear: number;
 	fetching: boolean;
 	ok: boolean;
 }
@@ -63,36 +64,40 @@ export const useExtendedQuery = (): ExtendedQueryResult => {
 	const datasource = useParametersContext((state) => state.inputs.datasource);
 	const customData = useParametersContext((state) => state.inputs.customData);
 
-	const [years, setYears] = useState<ContributionWeeks[]>([[]]);
-	const [fetching, setFetching] = useState(false);
-	const [ok, setOk] = useState(true);
+	const enabled = datasource === SkylineDatasource.Github && isAuthenticated();
+	const query = `${name}:${start}:${end}`;
+	const [result, setResult] = useState({
+		query: "",
+		years: [[]] as ContributionWeeks[],
+		firstYear: start,
+		ok: true,
+	});
 
 	useEffect(() => {
-		if (
-			datasource === SkylineDatasource.Custom ||
-			!isAuthenticated() ||
-			name === undefined
-		) {
-			return;
-		}
-
+		if (!enabled) return;
 		let cancelled = false;
-		setFetching(true);
-		setOk(true);
-		setYears([[]]);
-		void doRangeQuery({ name, start, end }).then((result) => {
+		void doRangeQuery({ name, start, end }).then((years) => {
 			if (!cancelled) {
-				setYears(result);
-				setOk(result.length > 0);
-				setFetching(false);
+				setResult({ query, years, firstYear: start, ok: years.length > 0 });
 			}
 		});
 		return () => {
 			cancelled = true;
 		};
-	}, [datasource, name, start, end]);
+	}, [enabled, name, start, end, query]);
 	if (datasource === SkylineDatasource.Custom) {
-		return { years: customData, fetching: false, ok: true };
+		const index = customData.findIndex((weeks) => weeks.length > 0);
+		const firstYear =
+			index < 0
+				? start
+				: new Date(customData[index][0].firstDay).getUTCFullYear() - index;
+		return { years: customData, firstYear, fetching: false, ok: true };
 	}
-	return { years, fetching, ok };
+	const fetching = enabled && result.query !== query;
+	return {
+		years: result.years,
+		firstYear: result.firstYear,
+		fetching,
+		ok: fetching || result.ok,
+	};
 };

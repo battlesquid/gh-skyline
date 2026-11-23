@@ -30,7 +30,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 
 	const isMobile = useMediaQuery(MQ.sm);
 
-	const { years, fetching, ok } = useExtendedQuery();
+	const { years, firstYear, fetching, ok } = useExtendedQuery();
 
 	useUrlStateSync();
 
@@ -46,7 +46,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 			withBorder={false}
 		>
 			<AppShell.Navbar p="md" pr={0}>
-				<Sidebar profile={profile} ok={ok} />
+				<Sidebar profile={profile} ok={ok} fetching={fetching} />
 			</AppShell.Navbar>
 			<AppShell.Main style={{ height: "100dvh" }}>
 				<LoadingOverlay
@@ -55,7 +55,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 					overlayProps={{ radius: "sm", blur: 2 }}
 				/>
 				<Box pos="relative" h="100%">
-					<Skyline years={years} />
+					<Skyline years={years} firstYear={firstYear} />
 					{isMobile && (
 						<Tooltip label="Edit Settings">
 							<ActionIcon
@@ -106,7 +106,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 							</Text>
 						}
 					>
-						<Sidebar fromDrawer profile={profile} ok={ok} />
+						<Sidebar fromDrawer profile={profile} ok={ok} fetching={fetching} />
 					</Drawer>
 				)}
 			</AppShell.Main>

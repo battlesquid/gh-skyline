@@ -19,10 +19,12 @@ import type { UserProfile } from "../api/auth";
 import { Profile } from "./profile";
 import { BasePaddingInput } from "./sidebar_inputs/base_padding";
 import { BaseShapeInput } from "./sidebar_inputs/base_shape";
-import { ExportButton } from "./sidebar_inputs/export";
+import { ConnectYearsInput } from "./sidebar_inputs/connect_years";
+import { ExportButton, ExportTargetInput } from "./sidebar_inputs/export";
 import { ExportFormatInput } from "./sidebar_inputs/export_format";
 import { FilenameInput } from "./sidebar_inputs/filename";
 import { FontInput } from "./sidebar_inputs/font_input";
+import { FrontContentInput } from "./sidebar_inputs/front_content";
 import { GenerateSection } from "./sidebar_inputs/generate_section";
 import { InsetTextCheckbox } from "./sidebar_inputs/inset_text";
 import { RenderColorInput } from "./sidebar_inputs/render_color";
@@ -36,10 +38,11 @@ interface SidebarProps {
 	fromDrawer?: boolean;
 	profile: UserProfile | null;
 	ok: boolean;
+	fetching: boolean;
 }
 
 export function Sidebar(props: SidebarProps) {
-	const { fromDrawer, profile, ok } = props;
+	const { fromDrawer, profile, ok, fetching } = props;
 
 	return (
 		<Stack h={"100%"} gap={10}>
@@ -76,6 +79,7 @@ export function Sidebar(props: SidebarProps) {
 										<UsernameOverrideInput />
 										<FontInput />
 										<InsetTextCheckbox />
+										<FrontContentInput />
 									</Stack>
 								</Accordion.Panel>
 							</Accordion.Item>
@@ -88,6 +92,7 @@ export function Sidebar(props: SidebarProps) {
 										<TowerDampeningInput />
 										<BasePaddingInput />
 										<BaseShapeInput />
+										<ConnectYearsInput />
 									</Stack>
 								</Accordion.Panel>
 							</Accordion.Item>
@@ -110,6 +115,7 @@ export function Sidebar(props: SidebarProps) {
 										<FilenameInput />
 										<ExportFormatInput />
 										<ScaleInput />
+										<ExportTargetInput />
 									</Stack>
 								</Accordion.Panel>
 							</Accordion.Item>
@@ -119,7 +125,7 @@ export function Sidebar(props: SidebarProps) {
 				<AppShell.Section>
 					<Stack gap="xs">
 						<ShareButton />
-						<ExportButton />
+						<ExportButton fetching={fetching || !ok} />
 					</Stack>
 				</AppShell.Section>
 			</Card>

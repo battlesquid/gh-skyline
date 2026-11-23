@@ -1,20 +1,22 @@
-import {
-	compressToEncodedURIComponent,
-	decompressFromEncodedURIComponent,
-} from "lz-string";
+import lzString from "lz-string";
 import { z } from "zod";
 import {
 	DEFAULT_INPUT_PARAMETERS,
 	type SkylineModelInputParameters,
 } from "../stores/parameters";
-import { ExportFormat } from "../three/export";
-import { SkylineBaseShape } from "../three/types";
+import {
+	DEFAULT_FRONT_OPTIONS,
+	ExportFormat,
+	FRONT_ALIGNMENTS,
+	FRONT_LOGOS,
+	SkylineBaseShape,
+} from "../three/types";
 
 export const URL_PARAM_KEY = "s";
 
 export const MinimalShareSchema = z.object({
 	v: z.literal(1).catch(1),
-	type: z.literal("minimal").catch("minimal"),
+	type: z.literal("minimal"),
 	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
 	startYear: z
 		.number()
@@ -28,9 +30,18 @@ export const MinimalShareSchema = z.object({
 		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
 });
 
+const frontOptionsSchema = z
+	.object({
+		visible: z.boolean().catch(DEFAULT_FRONT_OPTIONS.visible),
+		alignment: z.enum(FRONT_ALIGNMENTS).catch(DEFAULT_FRONT_OPTIONS.alignment),
+		x: z.number().catch(DEFAULT_FRONT_OPTIONS.x),
+		y: z.number().catch(DEFAULT_FRONT_OPTIONS.y),
+	})
+	.catch(DEFAULT_FRONT_OPTIONS);
+
 export const FullShareSchema = z.object({
 	v: z.literal(1).catch(1),
-	type: z.literal("full").catch("full"),
+	type: z.literal("full"),
 	name: z.string().catch(DEFAULT_INPUT_PARAMETERS.name),
 	startYear: z
 		.number()
@@ -44,11 +55,11 @@ export const FullShareSchema = z.object({
 		.catch(DEFAULT_INPUT_PARAMETERS.endYear),
 	nameOverride: z.string().catch(DEFAULT_INPUT_PARAMETERS.nameOverride),
 	insetText: z.boolean().catch(DEFAULT_INPUT_PARAMETERS.insetText),
-	towerSize: z.number().catch(DEFAULT_INPUT_PARAMETERS.towerSize),
+	towerSize: z.number().positive().catch(DEFAULT_INPUT_PARAMETERS.towerSize),
 	dampening: z.number().min(1).catch(DEFAULT_INPUT_PARAMETERS.dampening),
 	shape: z.enum(SkylineBaseShape).catch(DEFAULT_INPUT_PARAMETERS.shape),
 	padding: z.number().min(0).catch(DEFAULT_INPUT_PARAMETERS.padding),
-	textDepth: z.number().catch(DEFAULT_INPUT_PARAMETERS.textDepth),
+	textDepth: z.number().positive().catch(DEFAULT_INPUT_PARAMETERS.textDepth),
 	color: z.string().catch(DEFAULT_INPUT_PARAMETERS.color),
 	showContributionColor: z
 		.boolean()
@@ -60,9 +71,24 @@ export const FullShareSchema = z.object({
 	logoOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.logoOffset),
 	nameOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.nameOffset),
 	yearOffset: z.number().catch(DEFAULT_INPUT_PARAMETERS.yearOffset),
+	front: z
+		.object({
+			name: frontOptionsSchema,
+			year: frontOptionsSchema,
+			logo: frontOptionsSchema,
+		})
+		.catch(DEFAULT_INPUT_PARAMETERS.front),
+	frontLogo: z.enum(FRONT_LOGOS).catch(DEFAULT_INPUT_PARAMETERS.frontLogo),
+	connectYears: z.boolean().catch(DEFAULT_INPUT_PARAMETERS.connectYears),
+	jointOffsets: z
+		.record(z.string().regex(/^\d{4}$/), z.number())
+		.catch(DEFAULT_INPUT_PARAMETERS.jointOffsets),
 });
 
-export const ShareSchema = z.union([MinimalShareSchema, FullShareSchema]);
+export const ShareSchema = z.discriminatedUnion("type", [
+	MinimalShareSchema,
+	FullShareSchema,
+]);
 export type ShareState = z.infer<typeof ShareSchema>;
 
 export function toMinimal(inputs: SkylineModelInputParameters): ShareState {
@@ -96,17 +122,21 @@ export function toFull(inputs: SkylineModelInputParameters): ShareState {
 		logoOffset: inputs.logoOffset,
 		nameOffset: inputs.nameOffset,
 		yearOffset: inputs.yearOffset,
+		front: inputs.front,
+		frontLogo: inputs.frontLogo,
+		connectYears: inputs.connectYears,
+		jointOffsets: inputs.jointOffsets,
 	};
 }
 
 export function encodeShareState(state: ShareState): string {
 	const json = JSON.stringify(state);
-	return compressToEncodedURIComponent(json);
+	return lzString.compressToEncodedURIComponent(json);
 }
 
 export function decodeShareState(encoded: string): ShareState | null {
 	try {
-		const json = decompressFromEncodedURIComponent(encoded);
+		const json = lzString.decompressFromEncodedURIComponent(encoded);
 		if (!json) return null;
 		const parsed = JSON.parse(json);
 		const result = ShareSchema.safeParse(parsed);
@@ -158,6 +188,10 @@ export function getInitialInputsFromUrl(
 		logoOffset: data.logoOffset,
 		nameOffset: data.nameOffset,
 		yearOffset: data.yearOffset,
+		front: data.front,
+		frontLogo: data.frontLogo,
+		connectYears: data.connectYears,
+		jointOffsets: data.jointOffsets,
 	};
 }
 

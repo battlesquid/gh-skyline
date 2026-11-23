@@ -45,10 +45,26 @@ And so here we are!
 - Highly customizable, parameter-based model editor with options to change
   username text, font, tower size, base shape, and more.
 - Ability to generate multi-year skylines
+- Adjustable front name, year, and logo placement, including the option to hide each piece
+- On-demand STL and 3MF downloads for the assembled skyline or individual parts
+- Optional front-to-back year tiles with mating connectors
 - Performant, changes are applied in real-time
 - 3MF support (can export model with colors for multi-extruder printers)
 - Cloud Enterprise authentication support
 - Sharing support, with minimal or full model settings
+
+### Printing parts
+
+Choose a part under **Settings > Export**. The tower-only download adds a thin
+carrier beneath the towers; it doesn't change the assembled skyline. The
+carrier and each individual tile body are exported as single-color solids.
+The assembled 3MF retains contribution coloring.
+
+To print connectable years, enable **Connectable year tiles** under **Settings
+> Model** and download each year tile. Change the offset for a seam to move
+both matching connectors together. Use the same export scale for each tile:
+scaling also changes the clearance. Print a mating pair to check fit for your
+printer and filament before printing a larger set.
 
 ## Stack
 
@@ -80,6 +96,7 @@ Check types, lint, and formatting:
 ```bash
 pnpm typecheck
 pnpm neat
+pnpm --filter @skyline/app test
 ```
 
 Apply lint and formatting fixes:
