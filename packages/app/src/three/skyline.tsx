@@ -1,41 +1,33 @@
-import { Bounds, Environment, Grid, SoftShadows } from "@react-three/drei";
+import { Environment, Grid, SoftShadows } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useMemo, useRef } from "react";
 import { DoubleSide, type Group } from "three";
 import type { ContributionWeeks } from "../api/types";
-import { useControlsStore } from "../stores/controls";
 import { useParametersContext } from "../stores/parameters";
-import { Cameras } from "./cameras";
-import { CameraControls } from "./controls";
+import { CameraControls, SKYLINE_CAMERA_POSITION } from "./controls";
 import { SkylineModel } from "./skyline_model";
 
 export interface SkylineProps {
 	years: ContributionWeeks[];
 }
 
+const camera = {
+	position: SKYLINE_CAMERA_POSITION,
+	fov: 10,
+	near: 1,
+	far: 100_000,
+};
+
 export function Skyline(props: SkylineProps) {
 	const { years } = props;
 	const computed = useParametersContext((state) => state.computed);
 	const group = useRef<Group | null>(null);
 	const style = useMemo(() => ({ height: "100%" }), []);
-	const orthographic = useControlsStore(
-		(state) => state.projectionMode === "orthographic",
-	);
-	const ready = years.length !== 0 && years[0].length !== 0;
-
 	return (
-		<Canvas
-			orthographic={orthographic}
-			id="skyline-canvas"
-			style={style}
-			shadows
-		>
+		<Canvas camera={camera} id="skyline-canvas" style={style} shadows>
 			<Suspense>
-				<CameraControls />
-				<Cameras />
-				<Bounds fit={ready} clip={ready} observe={ready} margin={1}>
-					<SkylineModel group={group} years={years} />
-				</Bounds>
+				<SkylineModel group={group} years={years} />
+				<CameraControls group={group} years={years} />
 				<ambientLight intensity={Math.PI / 2} />
 				<spotLight
 					castShadow
@@ -66,8 +58,8 @@ export function Skyline(props: SkylineProps) {
 				<Grid
 					name="grid"
 					position={[0, -computed.platformHeight, 0]}
-					side={DoubleSide}
-					cellSize={0}
+					cellColor={"#4e98b4"}
+					cellSize={10}
 					sectionColor={"#4e98b4"}
 					sectionSize={40}
 					fadeDistance={10000}

@@ -12,7 +12,6 @@ import {
 	SkylineDatasource,
 } from "../stores/parameters";
 import "../styles/editor.css";
-import "../styles/page.css";
 
 export const Route = createFileRoute("/")({
 	component: Editor,

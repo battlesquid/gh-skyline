@@ -44,13 +44,14 @@ export const isNullish = (value: unknown): value is null | undefined => {
 	return false;
 };
 
-// gets the week number relative to the year
+// Sunday-based column relative to the week containing January 1.
 export const getWeekNo = (date: Date) => {
-	const d = new Date(
-		Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
-	);
-	const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-	return (
-		Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7) - 1
+	const yearStart = new Date(date);
+	yearStart.setUTCMonth(0, 1);
+	yearStart.setUTCHours(0, 0, 0, 0);
+	return Math.floor(
+		((date.getTime() - yearStart.getTime()) / 86400000 +
+			yearStart.getUTCDay()) /
+			7,
 	);
 };

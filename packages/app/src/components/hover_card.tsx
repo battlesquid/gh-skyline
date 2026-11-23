@@ -9,6 +9,7 @@ export function HoverCard() {
 		target !== null
 			? new Date(target.date).toLocaleDateString(undefined, {
 					dateStyle: "short",
+					timeZone: "UTC",
 				})
 			: "";
 	const contributions = target !== null ? target.contributionCount : 0;

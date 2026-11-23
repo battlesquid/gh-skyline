@@ -1,5 +1,14 @@
-import { AppShell, Drawer, LoadingOverlay, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	AppShell,
+	Box,
+	Drawer,
+	LoadingOverlay,
+	Text,
+	Tooltip,
+} from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { IconPencil } from "@tabler/icons-react";
 import type { UserProfile } from "../api/auth";
 import { useExtendedQuery } from "../hooks/useExtendedQuery";
 import { useUrlStateSync } from "../hooks/useUrlState";
@@ -7,7 +16,7 @@ import { MQ } from "../theme/media";
 import { Skyline } from "../three/skyline";
 import { HoverCard } from "./hover_card";
 import { Sidebar } from "./sidebar";
-import { SkylineControls } from "./skyline_controls";
+import { ResetCameraButton } from "./skyline_controls";
 
 export interface EditorAppShellProps {
 	profile: UserProfile | null;
@@ -28,7 +37,7 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 	return (
 		<AppShell
 			header={{ height: 0 }}
-			padding={"xs"}
+			padding={{ base: 0, sm: "xs" }}
 			navbar={{
 				width: 320,
 				breakpoint: "sm",
@@ -39,13 +48,34 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 			<AppShell.Navbar p="md" pr={0}>
 				<Sidebar profile={profile} ok={ok} />
 			</AppShell.Navbar>
-			<AppShell.Main style={{ height: "100vh" }}>
+			<AppShell.Main style={{ height: "100dvh" }}>
 				<LoadingOverlay
 					visible={fetching}
 					zIndex={1000}
 					overlayProps={{ radius: "sm", blur: 2 }}
 				/>
-				<Skyline years={years} />
+				<Box pos="relative" h="100%">
+					<Skyline years={years} />
+					{isMobile && (
+						<Tooltip label="Edit Settings">
+							<ActionIcon
+								pos="absolute"
+								style={{
+									top: "var(--mantine-spacing-sm)",
+									left: "var(--mantine-spacing-sm)",
+									zIndex: 1,
+								}}
+								variant="default"
+								size="input-xs"
+								aria-label="Open Settings"
+								onClick={openDrawer}
+							>
+								<IconPencil stroke={1} aria-hidden="true" />
+							</ActionIcon>
+						</Tooltip>
+					)}
+					<ResetCameraButton />
+				</Box>
 				<div
 					style={{
 						position: "absolute",
@@ -53,12 +83,12 @@ export function EditorAppShell({ profile }: EditorAppShellProps) {
 						right: 0,
 						top: 0,
 						bottom: 0,
+						overflow: "clip",
 						pointerEvents: "none",
 					}}
 				>
 					<HoverCard />
 				</div>
-				<SkylineControls onOpenDrawer={openDrawer} />
 				{isMobile && (
 					<Drawer
 						opened={drawerOpened}

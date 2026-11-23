@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { IconCheck, IconCopy, IconShare2 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { isAuthenticated } from "../../api/auth";
 import { buildShareLinks } from "../../share/urlShare";
 import {
 	SkylineDatasource,
@@ -34,7 +35,9 @@ export function ShareButton() {
 		<Popover opened={opened} onChange={setOpened} position="top" withArrow>
 			<Popover.Target>
 				<Button
-					disabled={datasource === SkylineDatasource.Custom}
+					disabled={
+						!isAuthenticated() || datasource === SkylineDatasource.Custom
+					}
 					variant="light"
 					onClick={() => setOpened((v) => !v)}
 					leftSection={<IconShare2 size={16} />}

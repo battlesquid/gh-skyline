@@ -9,7 +9,6 @@
 		"**/*.yaml",
 		"**/*.yml",
 		"**/public/**",
-		"packages/app/src/data.ts",
 		"**/graphql-env.d.ts",
 		"**/routeTree.gen.ts",
 		"**/theme/style.css",

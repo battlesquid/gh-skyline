@@ -11,6 +11,7 @@ import { shadcnTheme } from "./theme/theme";
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import "./theme/style.css";
+import "./styles/page.css";
 
 const router = createRouter({ routeTree });
 declare module "@tanstack/react-router" {

@@ -24,20 +24,20 @@ const doRangeQuery = async (props: ExtendedQueryProps) => {
 		return [];
 	}
 	const { name, start, end } = props;
-	const queries: Promise<
-		OperationResult<ResultOf<typeof ContributionQuery>>
-	>[] = [];
-	for (let i = start; i <= end; i++) {
-		const promise = client
-			.query(ContributionQuery, {
-				name,
-				start: `${i}-01-01T00:00:00Z`,
-				end: `${i}-12-31T00:00:00Z`,
-			})
-			.toPromise();
-		queries.push(promise);
-	}
 	try {
+		const queries: Promise<
+			OperationResult<ResultOf<typeof ContributionQuery>>
+		>[] = [];
+		for (let i = start; i <= end; i++) {
+			const promise = client
+				.query(ContributionQuery, {
+					name,
+					start: `${i}-01-01T00:00:00Z`,
+					end: `${i}-12-31T00:00:00Z`,
+				})
+				.toPromise();
+			queries.push(promise);
+		}
 		const results = await Promise.all(queries);
 		const years: ContributionWeeks[] = [];
 		for (const result of results) {
@@ -50,7 +50,8 @@ const doRangeQuery = async (props: ExtendedQueryProps) => {
 			}
 		}
 		return years;
-	} catch (_e) {
+	} catch (error) {
+		console.error("Unable to load GitHub contributions", error);
 		return [];
 	}
 };
@@ -67,29 +68,31 @@ export const useExtendedQuery = (): ExtendedQueryResult => {
 	const [ok, setOk] = useState(true);
 
 	useEffect(() => {
-		if (datasource === SkylineDatasource.Custom && customData.length > 0) {
-			setYears(customData);
-			setOk(true);
-			setFetching(false);
+		if (
+			datasource === SkylineDatasource.Custom ||
+			!isAuthenticated() ||
+			name === undefined
+		) {
 			return;
 		}
 
-		if (!isAuthenticated() || name === undefined) {
-			return;
-		}
-
+		let cancelled = false;
 		setFetching(true);
 		setOk(true);
 		setYears([[]]);
-		doRangeQuery({ name, start, end })
-			.then((result) => {
+		void doRangeQuery({ name, start, end }).then((result) => {
+			if (!cancelled) {
 				setYears(result);
-				if (result.length === 0) {
-					setOk(false);
-				}
-			})
-			.catch(console.error)
-			.finally(() => setFetching(false));
-	}, [datasource, customData, name, start, end]);
+				setOk(result.length > 0);
+				setFetching(false);
+			}
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [datasource, name, start, end]);
+	if (datasource === SkylineDatasource.Custom) {
+		return { years: customData, fetching: false, ok: true };
+	}
 	return { years, fetching, ok };
 };

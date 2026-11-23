@@ -6,7 +6,7 @@ import { formatYearText } from "../api/utils";
 import { SAMPLE_DATA } from "../data";
 import { ExportFormat } from "../three/export";
 import { SkylineBaseShape } from "../three/types";
-import { safeString } from "../utils";
+import { getWeekNo, safeString } from "../utils";
 import { DEFAULT_FONT } from "./fonts";
 
 export enum SkylineDatasource {
@@ -68,7 +68,23 @@ export type ParametersStore = {
 export const getComputedParameters = (
 	inputs: SkylineModelInputParameters,
 ): SkylineModelComputedParameters => {
-	const modelLength = WEEKS_IN_YEAR * inputs.towerSize;
+	const customYears =
+		inputs.datasource === SkylineDatasource.Custom ? inputs.customData : [];
+	const firstCustomWeek = customYears[0]?.[0];
+	const lastCustomWeek = customYears.at(-1)?.[0];
+	const startYear = firstCustomWeek
+		? new Date(firstCustomWeek.firstDay).getUTCFullYear()
+		: inputs.startYear;
+	const endYear = lastCustomWeek
+		? new Date(lastCustomWeek.firstDay).getUTCFullYear()
+		: inputs.endYear;
+	const modelWeeks = customYears.reduce((max, weeks) => {
+		const lastWeek = weeks.at(-1);
+		return lastWeek
+			? Math.max(max, getWeekNo(new Date(lastWeek.firstDay)) + 1)
+			: max;
+	}, WEEKS_IN_YEAR);
+	const modelLength = modelWeeks * inputs.towerSize;
 	const modelWidth = DAYS_IN_WEEK * inputs.towerSize;
 	const platformHeight = inputs.towerSize * 3.2;
 	const halfPlatformHeight = platformHeight / 2;
@@ -77,7 +93,7 @@ export const getComputedParameters = (
 	const halfModelLength = modelLength / 2;
 	const halfModelWidth = modelWidth / 2;
 	const paddingWidth = inputs.padding * 2;
-	const formattedYear = formatYearText(inputs.startYear, inputs.endYear);
+	const formattedYear = formatYearText(startYear, endYear);
 	const resolvedFilename = safeString(
 		inputs.filename,
 		`${inputs.name}_${formattedYear}_skyline`,

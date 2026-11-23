@@ -22,7 +22,6 @@ import { isAuthenticated, resolveToken } from "../api/auth";
 import ContributionBackground from "../components/contribution_background";
 import { MQ } from "../theme/media";
 import "../styles/login.css";
-import "../styles/page.css";
 
 const REDIRECT_STORAGE_KEY = "skyline.redirectAfterLogin";
 

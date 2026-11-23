@@ -1,17 +1,9 @@
 import { darken } from "@mantine/core";
-import { Instances, useBounds } from "@react-three/drei";
-import { type MutableRefObject, useEffect, useState } from "react";
+import { Instances } from "@react-three/drei";
+import { type MutableRefObject, useEffect, useMemo } from "react";
 import { Color, type Group as ThreeGroup } from "three";
 import { useShallow } from "zustand/shallow";
-import { HEATMAP_COLORS } from "../api/constants";
-import type {
-	ContributionDay,
-	ContributionWeek,
-	ContributionWeeks,
-} from "../api/types";
-import { getFirstDayOffset } from "../api/utils";
 import { getHeatmapColors } from "../heatmap";
-import { useControlsStore } from "../stores/controls";
 import { useModelStore } from "../stores/model";
 import {
 	DEFAULT_INPUT_PARAMETERS,
@@ -24,52 +16,53 @@ import type { SkylineProps } from "./skyline";
 import { SkylineBase } from "./skyline_base";
 import { SkylineObjectNames } from "./utils";
 
-interface TowersRender {
-	towers: (JSX.Element | null)[];
-	count: number;
-}
-
 export interface SkylineModelProps extends SkylineProps {
 	group: MutableRefObject<ThreeGroup | null>;
 }
 
 export function SkylineModel({ group, years }: SkylineModelProps) {
-	const [initialized, setInitialized] = useState(false);
 	const computed = useParametersContext(useShallow((state) => state.computed));
 	const inputs = useParametersContext(useShallow((state) => state.inputs));
+	const isCustom = inputs.datasource === SkylineDatasource.Custom;
+	const towersByYear = useMemo(
+		() =>
+			years.map((weeks) => {
+				const days = weeks
+					.flatMap((week) => week.contributionDays)
+					.filter((day) => day.contributionCount > 0);
+				const colors =
+					isCustom && inputs.showContributionColor
+						? getHeatmapColors(days, (day) => day.contributionCount)
+						: null;
+				return days.map((day, index) => {
+					const date = new Date(day.date);
+					return {
+						day,
+						weekIndex: getWeekNo(date),
+						weekday: date.getUTCDay(),
+						color: colors?.[index],
+					};
+				});
+			}),
+		[years, isCustom, inputs.showContributionColor],
+	);
 
 	const setDirty = useModelStore(useShallow((state) => state.setDirty));
 	const setModel = useModelStore((state) => state.setModel);
 
-	const reset = useControlsStore(useShallow((state) => state.reset));
-	const clearReset = useControlsStore(useShallow((state) => state.clearReset));
-
-	const bounds = useBounds();
-	let boundsTimeout: number | undefined;
-	const clearBoundsTimeout = () => {
-		if (boundsTimeout !== undefined) {
-			clearTimeout(boundsTimeout);
-		}
-	};
-
 	useEffect(() => {
-		clearTimeout(boundsTimeout);
 		setDirty(true);
-		boundsTimeout = setTimeout(() => {
+		const exportTimeout = setTimeout(() => {
 			if (group.current === null) {
 				return;
 			}
 			setDirty(false);
-			if (initialized) {
-				bounds.refresh().clip().fit();
-			} else {
-				setInitialized(true);
-			}
 			setModel(group.current.clone());
 		}, 1000);
 
-		return clearBoundsTimeout;
+		return () => clearTimeout(exportTimeout);
 	}, [
+		years,
 		inputs.datasource,
 		inputs.dampening,
 		inputs.name,
@@ -80,137 +73,41 @@ export function SkylineModel({ group, years }: SkylineModelProps) {
 		inputs.font,
 		inputs.shape,
 		inputs.insetText,
+		inputs.color,
 		inputs.showContributionColor,
 	]);
 
-	useEffect(() => {
-		if (reset === null) {
-			return;
-		}
-		bounds.refresh().clip().fit().reset();
-		clearReset();
-	}, [reset]);
-
-	const renderDay = (
-		day: ContributionDay,
-		yearIdx: number,
-		weekIdx: number,
-		weekOffset: number,
-		dayIdx: number,
-		dayOffset: number,
-	) => {
-		if (day.contributionCount === 0) {
-			return null;
-		}
-		const YEAR_OFFSET = computed.modelWidth * yearIdx;
-		const centerOffset =
-			years.length === 1 ? 0 : -(computed.modelWidth * (years.length - 1)) / 2;
-		const color = new Color(
-			inputs.showContributionColor ? darken(day.color, 0.2) : inputs.color,
-		);
-
-		return (
+	const centerOffset = -(computed.modelWidth * (years.length - 1)) / 2;
+	const towers = towersByYear.flatMap((days, yearIdx) =>
+		days.map(({ day, weekIndex, weekday, color }) => (
 			<ContributionTower
 				key={day.date.toString()}
 				day={day}
-				color={color}
+				color={
+					new Color(
+						inputs.showContributionColor
+							? (color ?? darken(day.color, 0.2))
+							: inputs.color,
+					)
+				}
 				x={
-					(weekIdx + weekOffset) * inputs.towerSize -
+					weekIndex * inputs.towerSize -
 					computed.halfModelLength +
 					computed.towerSizeOffset
 				}
 				y={
 					centerOffset +
-					YEAR_OFFSET +
-					((dayIdx + dayOffset) * inputs.towerSize -
-						computed.halfModelWidth +
-						computed.towerSizeOffset)
+					computed.modelWidth * yearIdx +
+					weekday * inputs.towerSize -
+					computed.halfModelWidth +
+					computed.towerSizeOffset
 				}
 				size={DEFAULT_INPUT_PARAMETERS.towerSize}
 				dampening={inputs.dampening}
 			/>
-		);
-	};
-
-	const renderWeek = (
-		week: ContributionWeek,
-		yearIdx: number,
-		weekIdx: number,
-		weekOffset: number,
-		dayOffset: number,
-		heatmap: string[][],
-	) => {
-		return week.contributionDays.reduce<TowersRender>(
-			(prev, day, dayIdx) => {
-				const tower = renderDay(
-					day,
-					yearIdx,
-					weekIdx,
-					weekOffset,
-					dayIdx,
-					dayOffset,
-				);
-				const count = 1;
-				return { towers: prev.towers.concat(tower), count: prev.count + count };
-			},
-			{ towers: [], count: 0 },
-		);
-	};
-
-	const renderYear = (
-		weeks: ContributionWeeks,
-		yearIdx: number,
-		heatmap: string[][],
-	) => {
-		return weeks.reduce<TowersRender>(
-			(prev, week, weekIdx) => {
-				const dayOffset = weekIdx === 0 ? getFirstDayOffset(week, weekIdx) : 0;
-				const weekOffset = getWeekNo(
-					new Date(weeks[0].contributionDays[0].date),
-				);
-				const { towers, count } = renderWeek(
-					week,
-					yearIdx,
-					weekIdx,
-					weekOffset,
-					dayOffset,
-					heatmap,
-				);
-				return {
-					towers: prev.towers.concat(towers),
-					count: prev.count + count,
-				};
-			},
-			{ towers: [], count: 0 },
-		);
-	};
-
-	const render = () => {
-		const heatmap =
-			inputs.datasource === SkylineDatasource.Custom
-				? years.map((weeks) =>
-						getHeatmapColors(
-							weeks.flatMap((w) => w.contributionDays.flatMap((d) => d)),
-							(day) => day.contributionCount,
-						),
-					)
-				: [];
-
-		console.log(heatmap);
-
-		return years.reduce<TowersRender>(
-			(prev, weeks, yearIdx) => {
-				const { towers, count } = renderYear(weeks, yearIdx, heatmap);
-				return {
-					towers: prev.towers.concat(towers),
-					count: prev.count + count,
-				};
-			},
-			{ towers: [], count: 0 },
-		);
-	};
-
-	const { towers, count } = render();
+		)),
+	);
+	const count = towers.length;
 
 	return (
 		<group ref={group}>
